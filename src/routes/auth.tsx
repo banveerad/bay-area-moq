@@ -247,16 +247,8 @@ function AuthPage() {
             >
               {mode === "signin" ? "Sign in" : "Create account"}
             </button>
-            {mode === "signin" && (
-              <p className="text-xs leading-relaxed text-muted-foreground">
-                By signing in you agree to our{" "}
-                <Link to="/terms" className="text-ember hover:underline">
-                  terms and conditions
-                </Link>
-                .
-              </p>
-            )}
           </form>
+
 
 
           <div className="mt-6 flex flex-wrap justify-between gap-3 text-sm text-muted-foreground">
