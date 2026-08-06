@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           event_date: string
           id: string
+          rsvp_count: number
           status: string
           summary: string
           time_label: string
@@ -32,6 +33,7 @@ export type Database = {
           created_at?: string
           event_date: string
           id?: string
+          rsvp_count?: number
           status?: string
           summary?: string
           time_label?: string
@@ -44,6 +46,7 @@ export type Database = {
           created_at?: string
           event_date?: string
           id?: string
+          rsvp_count?: number
           status?: string
           summary?: string
           time_label?: string

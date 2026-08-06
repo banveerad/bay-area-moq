@@ -7,6 +7,8 @@ export type MeetupRow = {
   city: string;
   summary: string;
   status: string;
+  rsvp_count: number;
+
 };
 
 export const statusLabel: Record<string, string> = {
