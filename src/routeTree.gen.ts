@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as MeetupsRouteImport } from './routes/meetups'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as WhatIsMoqRouteImport } from './routes/what-is-moq'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
@@ -54,6 +55,11 @@ const MeetupsRoute = MeetupsRouteImport.update({
   path: '/meetups',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/join': typeof JoinRoute
   '/meetups': typeof MeetupsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/account': typeof AuthenticatedAccountRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/join': typeof JoinRoute
   '/meetups': typeof MeetupsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/account': typeof AuthenticatedAccountRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/join': typeof JoinRoute
   '/meetups': typeof MeetupsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/join'
     | '/meetups'
+    | '/reset-password'
     | '/resources'
     | '/what-is-moq'
     | '/account'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/join'
     | '/meetups'
+    | '/reset-password'
     | '/resources'
     | '/what-is-moq'
     | '/account'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/join'
     | '/meetups'
+    | '/reset-password'
     | '/resources'
     | '/what-is-moq'
     | '/_authenticated/account'
@@ -150,6 +162,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   JoinRoute: typeof JoinRoute
   MeetupsRoute: typeof MeetupsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ResourcesRoute: typeof ResourcesRoute
   WhatIsMoqRoute: typeof WhatIsMoqRoute
 }
@@ -205,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MeetupsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/resources': {
       id: '/resources'
       path: '/resources'
@@ -248,6 +268,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   JoinRoute: JoinRoute,
   MeetupsRoute: MeetupsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ResourcesRoute: ResourcesRoute,
   WhatIsMoqRoute: WhatIsMoqRoute,
 }
