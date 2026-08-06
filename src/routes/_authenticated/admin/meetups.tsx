@@ -471,15 +471,8 @@ function AdminMeetupsPage() {
                             <button
                               type="button"
                               disabled={setRsvpStatus.isPending}
-                              title={full ? "Meetup is at capacity — raise capacity first" : undefined}
-                              onClick={() => {
-                                if (
-                                  full &&
-                                  !confirm("This meetup is at capacity. Move them to going anyway?")
-                                )
-                                  return;
-                                setRsvpStatus.mutate({ id: a.id, status: "going" });
-                              }}
+                              onClick={() => setRsvpStatus.mutate({ id: a.id, status: "going" })}
+
                               className="border border-ember px-2 py-1 text-xs uppercase tracking-wider text-ember hover:bg-ember hover:text-background disabled:opacity-50"
                             >
                               → Going
