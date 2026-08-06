@@ -1,0 +1,27 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#123B5C"/>
+      <stop offset="100%" stop-color="#0A2A45"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="256" height="256" rx="48" fill="url(#bay)"/>
+
+  <!-- bridge cable -->
+  <path d="M28 152 Q128 96 228 152" fill="none" stroke="#E0785A" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+
+  <!-- two bridge towers forming an M silhouette -->
+  <path d="M56 200 L56 64 L80 96 L80 200 Z" fill="#F0663F"/>
+  <path d="M176 200 L176 96 L200 64 L200 200 Z" fill="#F0663F"/>
+
+  <!-- deck -->
+  <rect x="40" y="188" width="176" height="14" rx="6" fill="#F0663F"/>
+
+  <!-- QUIC style data packets streaming beneath the deck -->
+  <rect x="64" y="216" width="20" height="10" rx="3" fill="#5FC8E3"/>
+  <rect x="96" y="216" width="20" height="10" rx="3" fill="#5FC8E3"/>
+  <rect x="128" y="216" width="20" height="10" rx="3" fill="#5FC8E3"/>
+  <rect x="160" y="216" width="20" height="10" rx="3" fill="#5FC8E3"/>
+</svg>
