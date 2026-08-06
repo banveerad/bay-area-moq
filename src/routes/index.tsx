@@ -138,8 +138,9 @@ function Index() {
           </h1>
           <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
             A community of streaming engineers, protocol nerds and codec people figuring
-            out what live video looks like once it stops pretending to be HTTP: transport,
-            encoding, packaging, ABR, ads, playback and QoE.
+            out what live video looks like once it stops pretending to be HTTP, and what
+            that changes for everything around it, from encoding and packaging to ads,
+            playback and the quality your viewers actually see.
           </p>
           <div className="mt-9">
             <Link
