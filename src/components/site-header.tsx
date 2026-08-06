@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 
 const links = [
   { to: "/meetups", label: "Meetups" },
@@ -12,6 +13,7 @@ const links = [
 
 export function SiteHeader() {
   const { isAuthenticated, loading } = useAuth();
+  const { isAdmin } = useIsAdmin();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur">
@@ -32,6 +34,15 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
+          {isAdmin && (
+            <Link
+              to="/admin/meetups"
+              className="px-3 py-2 text-muted-foreground transition-colors hover:text-foreground"
+              activeProps={{ className: "px-3 py-2 text-foreground" }}
+            >
+              Admin
+            </Link>
+          )}
           {!loading &&
             (isAuthenticated ? (
               <Link
