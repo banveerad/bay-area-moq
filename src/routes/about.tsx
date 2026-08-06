@@ -77,10 +77,15 @@ function AboutPage() {
           people are building, arguing about the market, and chasing the unsolved problems.
         </p>
         <p>
+          MoQ is the starting point, not the whole scope. Encoding, packaging, ABR, ad
+          insertion, playback and QoE all get airtime too.
+        </p>
+        <p>
           Volunteer-run and free. Venues are donated by Bay Area companies that care about
           the protocol. Not a users&apos; group, not a standards committee. Just a good tech
           group.
         </p>
+
       </div>
 
 
