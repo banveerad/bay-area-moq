@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useIsAdmin } from "@/hooks/use-is-admin";
+import { useMeetupAccess } from "@/hooks/use-meetup-access";
 import { formatEventDate, type MeetupRow } from "@/lib/meetups";
 import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
 import { MemberProfileDialog } from "@/components/member-profile-dialog";
@@ -61,7 +61,9 @@ type AttendeeRow = {
 };
 
 function AdminMeetupsPage() {
-  const { isAdmin, loading } = useIsAdmin();
+  const { isAdmin, managedIds, hasAccess, loading } = useMeetupAccess();
+  const [managerMeetupId, setManagerMeetupId] = useState<string | null>(null);
+  const [managerUserId, setManagerUserId] = useState("");
   const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(empty);
@@ -86,7 +88,7 @@ function AdminMeetupsPage() {
 
   const attendeesQuery = useQuery({
     queryKey: ["admin-attendees"],
-    enabled: isAdmin,
+    enabled: hasAccess,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("rsvps")
@@ -99,7 +101,7 @@ function AdminMeetupsPage() {
 
   const profilesQuery = useQuery({
     queryKey: ["admin-profiles"],
-    enabled: isAdmin,
+    enabled: hasAccess,
     queryFn: async () => {
       const { data, error } = await supabase.from("profiles").select("id, display_name, company");
       if (error) throw error;
@@ -116,6 +118,53 @@ function AdminMeetupsPage() {
   const attendeesFor = (meetupId: string, status: string) =>
     (attendeesQuery.data ?? []).filter((a) => a.meetup_id === meetupId && a.status === status);
 
+
+  const managersQuery = useQuery({
+    queryKey: ["meetup-managers"],
+    enabled: isAdmin,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("meetup_managers")
+        .select("id, meetup_id, user_id");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const managersFor = (meetupId: string) =>
+    (managersQuery.data ?? []).filter((m) => m.meetup_id === meetupId);
+
+  const addManager = useMutation({
+    mutationFn: async ({ meetupId, userId }: { meetupId: string; userId: string }) => {
+      if (!userId) throw new Error("Pick a member first.");
+      const { error } = await supabase
+        .from("meetup_managers")
+        .insert({ meetup_id: meetupId, user_id: userId });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["meetup-managers"] });
+      setManagerUserId("");
+      toast.success("Event manager added.");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const removeManager = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("meetup_managers").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["meetup-managers"] });
+      toast.success("Event manager removed.");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const visibleMeetups = (meetupsQuery.data ?? []).filter(
+    (m) => isAdmin || managedIds.includes(m.id),
+  );
 
   const reset = () => {
     setEditingId(null);
@@ -237,7 +286,7 @@ function AdminMeetupsPage() {
     return <p className="mx-auto max-w-3xl px-5 py-20 text-muted-foreground">Checking access…</p>;
   }
 
-  if (!isAdmin) {
+  if (!hasAccess) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-20">
         <h1 className="text-3xl">Page not found</h1>
@@ -251,14 +300,23 @@ function AdminMeetupsPage() {
         <div>
           <p className="eyebrow">Organiser tools</p>
           <h1 className="mt-4 text-4xl">Manage meetups</h1>
+          {!isAdmin && (
+            <p className="mt-3 text-sm text-muted-foreground">
+              You manage {managedIds.length === 1 ? "1 event" : `${managedIds.length} events`}. Only
+              those meetups are shown.
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap gap-3">
+        {isAdmin && (
         <Link
           to="/admin/members"
           className="border border-border px-5 py-3 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
         >
           Manage members
         </Link>
+        )}
+        {isAdmin && (
         <button
           type="button"
           onClick={startCreate}
@@ -266,6 +324,7 @@ function AdminMeetupsPage() {
         >
           + Add meetup
         </button>
+        )}
         </div>
       </div>
 
@@ -374,7 +433,7 @@ function AdminMeetupsPage() {
       )}
 
       <ul className="mt-12 divide-y divide-border border-y border-border">
-        {(meetupsQuery.data ?? []).map((m) => {
+        {visibleMeetups.map((m) => {
           const goingList = attendeesFor(m.id, "going");
           const waitList = attendeesFor(m.id, "waitlist");
           const expanded = openList === m.id;
@@ -425,6 +484,7 @@ function AdminMeetupsPage() {
                   >
                     ✎ Edit meetup
                   </button>
+                  {isAdmin && (
                   <button
                     type="button"
                     onClick={() => {
@@ -435,6 +495,7 @@ function AdminMeetupsPage() {
                   >
                     ✕ Delete meetup
                   </button>
+                  )}
                 </div>
               </div>
 
@@ -525,6 +586,68 @@ function AdminMeetupsPage() {
                         </li>
                       ))}
                     </ul>
+                  </div>
+                </div>
+              )}
+              {expanded && isAdmin && (
+                <div className="mt-4 border border-border bg-surface p-5">
+                  <p className="font-display text-xs tracking-widest uppercase text-ember">
+                    Event managers
+                  </p>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Event managers can edit this meetup and manage its RSVPs — nothing else.
+                  </p>
+                  <ul className="mt-3 space-y-2 text-sm">
+                    {managersFor(m.id).length === 0 && (
+                      <li className="text-muted-foreground">No event manager assigned.</li>
+                    )}
+                    {managersFor(m.id).map((mgr) => (
+                      <li key={mgr.id} className="flex flex-wrap items-center justify-between gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setProfileUserId(mgr.user_id)}
+                          className="text-left text-muted-foreground underline decoration-border underline-offset-4 hover:text-ember"
+                        >
+                          {nameFor(mgr.user_id)}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={removeManager.isPending}
+                          onClick={() => removeManager.mutate(mgr.id)}
+                          className="border border-destructive px-2 py-1 text-xs uppercase tracking-wider text-destructive hover:bg-destructive hover:text-background disabled:opacity-50"
+                        >
+                          Remove manager
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <select
+                      className={inputClass + " sm:w-auto"}
+                      value={managerMeetupId === m.id ? managerUserId : ""}
+                      onChange={(e) => {
+                        setManagerMeetupId(m.id);
+                        setManagerUserId(e.target.value);
+                      }}
+                    >
+                      <option value="">Select a member…</option>
+                      {(profilesQuery.data ?? [])
+                        .filter((p) => !managersFor(m.id).some((mgr) => mgr.user_id === p.id))
+                        .map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.display_name || "Member"}
+                            {p.company ? ` · ${p.company}` : ""}
+                          </option>
+                        ))}
+                    </select>
+                    <button
+                      type="button"
+                      disabled={addManager.isPending || managerMeetupId !== m.id || !managerUserId}
+                      onClick={() => addManager.mutate({ meetupId: m.id, userId: managerUserId })}
+                      className="border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background disabled:opacity-50"
+                    >
+                      + Add manager
+                    </button>
                   </div>
                 </div>
               )}

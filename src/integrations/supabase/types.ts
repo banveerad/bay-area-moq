@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      meetup_managers: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          meetup_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          meetup_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          meetup_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meetup_managers_meetup_id_fkey"
+            columns: ["meetup_id"]
+            isOneToOne: false
+            referencedRelation: "meetups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       meetups: {
         Row: {
           capacity: number | null
@@ -152,6 +184,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_meetup_manager: {
+        Args: { _meetup_id: string; _user_id: string }
         Returns: boolean
       }
     }
