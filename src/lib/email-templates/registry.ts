@@ -19,8 +19,11 @@ export interface TemplateEntry {
  */
 import { template as rsvpUpdateTemplate } from './rsvp-update'
 import { template as rsvpAdminAlertTemplate } from './rsvp-admin-alert'
+import { template as meetupAnnouncementTemplate } from './meetup-announcement'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'rsvp-update': rsvpUpdateTemplate,
   'rsvp-admin-alert': rsvpAdminAlertTemplate,
+  'meetup-announcement': meetupAnnouncementTemplate,
 }
+
