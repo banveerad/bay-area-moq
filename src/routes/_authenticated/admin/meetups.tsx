@@ -589,6 +589,68 @@ function AdminMeetupsPage() {
                   </div>
                 </div>
               )}
+              {expanded && isAdmin && (
+                <div className="mt-4 border border-border bg-surface p-5">
+                  <p className="font-display text-xs tracking-widest uppercase text-ember">
+                    Event managers
+                  </p>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Event managers can edit this meetup and manage its RSVPs — nothing else.
+                  </p>
+                  <ul className="mt-3 space-y-2 text-sm">
+                    {managersFor(m.id).length === 0 && (
+                      <li className="text-muted-foreground">No event manager assigned.</li>
+                    )}
+                    {managersFor(m.id).map((mgr) => (
+                      <li key={mgr.id} className="flex flex-wrap items-center justify-between gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setProfileUserId(mgr.user_id)}
+                          className="text-left text-muted-foreground underline decoration-border underline-offset-4 hover:text-ember"
+                        >
+                          {nameFor(mgr.user_id)}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={removeManager.isPending}
+                          onClick={() => removeManager.mutate(mgr.id)}
+                          className="border border-destructive px-2 py-1 text-xs uppercase tracking-wider text-destructive hover:bg-destructive hover:text-background disabled:opacity-50"
+                        >
+                          Remove manager
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <select
+                      className={inputClass + " sm:w-auto"}
+                      value={managerMeetupId === m.id ? managerUserId : ""}
+                      onChange={(e) => {
+                        setManagerMeetupId(m.id);
+                        setManagerUserId(e.target.value);
+                      }}
+                    >
+                      <option value="">Select a member…</option>
+                      {(profilesQuery.data ?? [])
+                        .filter((p) => !managersFor(m.id).some((mgr) => mgr.user_id === p.id))
+                        .map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.display_name || "Member"}
+                            {p.company ? ` · ${p.company}` : ""}
+                          </option>
+                        ))}
+                    </select>
+                    <button
+                      type="button"
+                      disabled={addManager.isPending || managerMeetupId !== m.id || !managerUserId}
+                      onClick={() => addManager.mutate({ meetupId: m.id, userId: managerUserId })}
+                      className="border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background disabled:opacity-50"
+                    >
+                      + Add manager
+                    </button>
+                  </div>
+                </div>
+              )}
             </li>
           );
         })}
