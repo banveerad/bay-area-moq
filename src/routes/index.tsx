@@ -93,7 +93,7 @@ function Index() {
           {upcoming.map((m) => (
             <article key={m.id} className="border border-border bg-surface p-7">
               <p className="font-display text-xs tracking-widest text-ember uppercase">
-                {m.date} · {m.time}
+                {formatEventDate(m.event_date)} · {m.time_label}
               </p>
               <h3 className="mt-4 text-lg leading-snug">{m.title}</h3>
               <p className="mt-3 text-sm text-muted-foreground">{m.summary}</p>
