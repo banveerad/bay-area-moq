@@ -63,6 +63,8 @@ function AdminMeetupsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(empty);
   const [openList, setOpenList] = useState<string | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
+
 
   const meetupsQuery = useQuery({
     queryKey: ["meetups"],
