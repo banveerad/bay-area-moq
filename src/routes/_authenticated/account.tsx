@@ -1,10 +1,12 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { formatEventDate } from "@/lib/meetups";
+
 
 export const Route = createFileRoute("/_authenticated/account")({
   head: () => ({
@@ -50,6 +52,39 @@ function AccountPage() {
       return data;
     },
   });
+  const { data: myRsvps = [], isLoading: rsvpsLoading } = useQuery({
+    queryKey: ["my-rsvps", user?.id],
+    enabled: Boolean(user?.id),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("rsvps")
+        .select(
+          "id, status, created_at, meetups(id, title, event_date, time_label, venue, city, status)",
+        )
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return (data ?? []).filter((r) => r.meetups);
+    },
+  });
+
+  const cancelRsvp = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("rsvps").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("RSVP cancelled.");
+      void queryClient.invalidateQueries({ queryKey: ["my-rsvps", user?.id] });
+      void queryClient.invalidateQueries({ queryKey: ["meetups"] });
+      void queryClient.invalidateQueries({ queryKey: ["rsvps"] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const sortedRsvps = [...myRsvps].sort((a, b) =>
+    (a.meetups!.event_date ?? "").localeCompare(b.meetups!.event_date ?? ""),
+  );
+
 
   useEffect(() => {
     if (profile) {
@@ -153,6 +188,53 @@ function AccountPage() {
           </button>
         </div>
       </form>
+
+      <section className="mt-16 border-t border-border pt-10">
+        <p className="eyebrow">Your meetups</p>
+        <h2 className="mt-3 text-xl leading-tight">RSVPs &amp; waitlist</h2>
+
+        {rsvpsLoading ? (
+          <p className="mt-6 text-sm text-muted-foreground">Loading…</p>
+        ) : sortedRsvps.length === 0 ? (
+          <p className="mt-6 text-sm text-muted-foreground">
+            You haven't RSVP'd to anything yet.{" "}
+            <Link to="/meetups" className="text-ember hover:underline">
+              Browse meetups
+            </Link>
+            .
+          </p>
+        ) : (
+          <ul className="mt-6 divide-y divide-border border border-border">
+            {sortedRsvps.map((rsvp) => {
+              const m = rsvp.meetups!;
+              return (
+                <li key={rsvp.id} className="flex flex-wrap items-start justify-between gap-4 bg-surface px-4 py-4">
+                  <div>
+                    <p className="font-display text-xs tracking-widest uppercase">
+                      <span className={rsvp.status === "going" ? "text-ember" : "text-muted-foreground"}>
+                        {rsvp.status === "going" ? "Going" : "Waitlisted"}
+                      </span>
+                    </p>
+                    <p className="mt-1.5 text-sm text-foreground">{m.title}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {formatEventDate(m.event_date)} · {m.time_label} · {m.venue}, {m.city}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => cancelRsvp.mutate(rsvp.id)}
+                    disabled={cancelRsvp.isPending}
+                    className="border border-border px-3 py-1.5 text-xs transition-colors hover:border-destructive hover:text-destructive disabled:opacity-50"
+                  >
+                    {rsvp.status === "going" ? "Cancel RSVP" : "Leave waitlist"}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
     </div>
+
   );
 }
