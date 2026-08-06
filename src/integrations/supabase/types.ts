@@ -48,6 +48,7 @@ export type Database = {
       }
       meetups: {
         Row: {
+          announced_at: string | null
           capacity: number | null
           city: string
           created_at: string
@@ -63,6 +64,7 @@ export type Database = {
           waitlist_count: number
         }
         Insert: {
+          announced_at?: string | null
           capacity?: number | null
           city: string
           created_at?: string
@@ -78,6 +80,7 @@ export type Database = {
           waitlist_count?: number
         }
         Update: {
+          announced_at?: string | null
           capacity?: number | null
           city?: string
           created_at?: string
@@ -101,6 +104,7 @@ export type Database = {
           display_name: string | null
           id: string
           interests: string | null
+          notify_new_meetups: boolean
           updated_at: string
         }
         Insert: {
@@ -109,6 +113,7 @@ export type Database = {
           display_name?: string | null
           id: string
           interests?: string | null
+          notify_new_meetups?: boolean
           updated_at?: string
         }
         Update: {
@@ -117,6 +122,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           interests?: string | null
+          notify_new_meetups?: boolean
           updated_at?: string
         }
         Relationships: []

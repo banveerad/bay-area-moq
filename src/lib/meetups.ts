@@ -10,6 +10,8 @@ export type MeetupRow = {
   rsvp_count: number;
   waitlist_count: number;
   capacity: number | null;
+  announced_at?: string | null;
+
 
 
 };

@@ -48,13 +48,31 @@ function AccountPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("display_name, company, interests")
+        .select("display_name, company, interests, notify_new_meetups")
         .eq("id", user!.id)
         .maybeSingle();
       if (error) throw error;
       return data;
     },
   });
+
+  const setNotifyPref = useMutation({
+    mutationFn: async (value: boolean) => {
+      const { error } = await supabase
+        .from("profiles")
+        .upsert({ id: user!.id, notify_new_meetups: value }, { onConflict: "id" });
+      if (error) throw error;
+      return value;
+    },
+    onSuccess: (value) => {
+      void queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
+      toast.success(
+        value ? "We'll email you about new meetups." : "New-meetup emails turned off.",
+      );
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
   const { data: myRsvps = [], isLoading: rsvpsLoading } = useQuery({
     queryKey: ["my-rsvps", user?.id],
     enabled: Boolean(user?.id),
@@ -181,6 +199,19 @@ function AccountPage() {
             className="mt-2 w-full border border-border bg-surface px-3 py-2.5 text-sm outline-none focus:border-ember"
           />
         </label>
+        <label className="flex items-start gap-3 border border-border bg-surface px-4 py-3.5">
+          <input
+            type="checkbox"
+            checked={profile?.notify_new_meetups ?? true}
+            disabled={setNotifyPref.isPending}
+            onChange={(e) => setNotifyPref.mutate(e.target.checked)}
+            className="mt-0.5 h-4 w-4 accent-[var(--color-ember,#e85d3a)]"
+          />
+          <span className="text-sm text-muted-foreground">
+            Email me when a new meetup is announced.
+          </span>
+        </label>
+
         <div className="flex flex-wrap gap-3">
           <button
             type="submit"
