@@ -196,18 +196,6 @@ function MeetupsPage() {
               </div>
             </li>
           );
-
-                ) : (
-                  <Link
-                    to="/auth"
-                    className="mt-3 inline-block border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
-                  >
-                    Sign in to RSVP
-                  </Link>
-                )}
-              </div>
-            </li>
-          );
         })}
       </ul>
 
