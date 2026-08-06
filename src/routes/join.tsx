@@ -55,12 +55,21 @@ function JoinPage() {
               <h2 className="text-lg">{w.title}</h2>
               <p className="mt-2 max-w-lg text-sm text-muted-foreground">{w.body}</p>
             </div>
-            <a
-              href={w.href}
-              className="shrink-0 border border-ember px-5 py-3 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-primary-foreground"
-            >
-              {w.action}
-            </a>
+            {"to" in w && w.to ? (
+              <Link
+                to={w.to}
+                className="shrink-0 border border-ember px-5 py-3 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-primary-foreground"
+              >
+                {w.action}
+              </Link>
+            ) : (
+              <a
+                href={(w as { href: string }).href}
+                className="shrink-0 border border-ember px-5 py-3 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-primary-foreground"
+              >
+                {w.action}
+              </a>
+            )}
           </div>
         ))}
       </div>
