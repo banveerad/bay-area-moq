@@ -36,7 +36,7 @@ function MeetupsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("meetups")
-        .select("id, title, event_date, time_label, venue, city, summary, status")
+        .select("id, title, event_date, time_label, venue, city, summary, status, rsvp_count")
         .order("event_date", { ascending: true });
       if (error) throw error;
       return (data ?? []) as MeetupRow[];
@@ -44,10 +44,13 @@ function MeetupsPage() {
   });
 
   const rsvpsQuery = useQuery({
-    queryKey: ["rsvps"],
+    queryKey: ["rsvps", user?.id],
     enabled: isAuthenticated,
     queryFn: async () => {
-      const { data, error } = await supabase.from("rsvps").select("meetup_id, user_id");
+      const { data, error } = await supabase
+        .from("rsvps")
+        .select("meetup_id")
+        .eq("user_id", user!.id);
       if (error) throw error;
       return data ?? [];
     },
@@ -72,6 +75,7 @@ function MeetupsPage() {
     },
     onSuccess: (result) => {
       void queryClient.invalidateQueries({ queryKey: ["rsvps"] });
+      void queryClient.invalidateQueries({ queryKey: ["meetups"] });
       toast.success(result === "going" ? "You're on the list." : "RSVP cancelled.");
     },
     onError: (error: Error) => toast.error(error.message),
@@ -82,9 +86,9 @@ function MeetupsPage() {
   const upcoming = meetups.filter((m) => m.status !== "past");
   const past = meetups.filter((m) => m.status === "past");
 
-  const countFor = (id: string) => rsvps.filter((r) => r.meetup_id === id).length;
-  const isGoing = (id: string) =>
-    rsvps.some((r) => r.meetup_id === id && r.user_id === user?.id);
+  const countFor = (id: string) => meetups.find((m) => m.id === id)?.rsvp_count ?? 0;
+  const isGoing = (id: string) => rsvps.some((r) => r.meetup_id === id);
+
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-20">
