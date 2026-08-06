@@ -35,13 +35,22 @@ export function SiteHeader() {
             </Link>
           ))}
           {isAdmin && (
-            <Link
-              to="/admin/meetups"
-              className="px-3 py-2 text-muted-foreground transition-colors hover:text-foreground"
-              activeProps={{ className: "px-3 py-2 text-foreground" }}
-            >
-              Admin
-            </Link>
+            <>
+              <Link
+                to="/admin/meetups"
+                className="px-3 py-2 text-muted-foreground transition-colors hover:text-foreground"
+                activeProps={{ className: "px-3 py-2 text-foreground" }}
+              >
+                Manage meetups
+              </Link>
+              <Link
+                to="/admin/members"
+                className="px-3 py-2 text-muted-foreground transition-colors hover:text-foreground"
+                activeProps={{ className: "px-3 py-2 text-foreground" }}
+              >
+                Manage members
+              </Link>
+            </>
           )}
           {!loading &&
             (isAuthenticated ? (
