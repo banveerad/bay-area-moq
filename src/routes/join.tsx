@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/join")({
   head: () => ({
@@ -28,16 +28,10 @@ const ways = [
     href: "https://discord.gg/yuW3HM8w",
   },
   {
-    title: "Announcements",
-    body: "One short email per meetup: date, venue, topics, RSVP link. Nothing else.",
-    action: "Email the organisers",
-    href: "mailto:hello@moqbayarea.dev",
-  },
-  {
     title: "Speak or demo",
     body: "20 minutes, or 5 minutes with something half-working on screen. Both welcome.",
     action: "Pitch a session",
-    href: "mailto:talks@moqbayarea.dev",
+    to: "/contact",
   },
 ];
 
@@ -61,12 +55,21 @@ function JoinPage() {
               <h2 className="text-lg">{w.title}</h2>
               <p className="mt-2 max-w-lg text-sm text-muted-foreground">{w.body}</p>
             </div>
-            <a
-              href={w.href}
-              className="shrink-0 border border-ember px-5 py-3 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-primary-foreground"
-            >
-              {w.action}
-            </a>
+            {"to" in w && w.to ? (
+              <Link
+                to={w.to}
+                className="shrink-0 border border-ember px-5 py-3 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-primary-foreground"
+              >
+                {w.action}
+              </Link>
+            ) : (
+              <a
+                href={(w as { href: string }).href}
+                className="shrink-0 border border-ember px-5 py-3 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-primary-foreground"
+              >
+                {w.action}
+              </a>
+            )}
           </div>
         ))}
       </div>
