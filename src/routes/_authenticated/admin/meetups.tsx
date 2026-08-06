@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/hooks/use-is-admin";
 import { formatEventDate, type MeetupRow } from "@/lib/meetups";
+import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
 import { MemberProfileDialog } from "@/components/member-profile-dialog";
 
 export const Route = createFileRoute("/_authenticated/admin/meetups")({
