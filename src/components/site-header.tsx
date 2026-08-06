@@ -4,7 +4,10 @@ const links = [
   { to: "/meetups", label: "Meetups" },
   { to: "/what-is-moq", label: "What is MoQ" },
   { to: "/resources", label: "Resources" },
+  { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
   { to: "/join", label: "Join" },
+
 ] as const;
 
 export function SiteHeader() {
