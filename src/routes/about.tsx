@@ -26,6 +26,8 @@ export const Route = createFileRoute("/about")({
 const goals = [
   ["Build the community", "Get the people working on MoQ in the same room on a regular cadence."],
   ["Share what we know", "Deep dives on transport, packaging, latency and codecs, with the real details."],
+  ["Cover the whole stack", "Encoding, packaging, ABR, ads, playback and QoE, not just the transport layer."],
+
   ["Show what you are building", "Demos over decks. Prototypes and half-finished experiments welcome."],
   ["Talk about the market", "Where MoQ wins, who is adopting it, and what nobody has built yet."],
   ["Name the hard problems", "Interop gaps, missing tooling, spec ambiguities, operational pain."],
