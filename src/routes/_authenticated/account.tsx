@@ -199,6 +199,19 @@ function AccountPage() {
             className="mt-2 w-full border border-border bg-surface px-3 py-2.5 text-sm outline-none focus:border-ember"
           />
         </label>
+        <label className="flex items-start gap-3 border border-border bg-surface px-4 py-3.5">
+          <input
+            type="checkbox"
+            checked={profile?.notify_new_meetups ?? true}
+            disabled={setNotifyPref.isPending}
+            onChange={(e) => setNotifyPref.mutate(e.target.checked)}
+            className="mt-0.5 h-4 w-4 accent-[var(--color-ember,#e85d3a)]"
+          />
+          <span className="text-sm text-muted-foreground">
+            Email me when a new meetup is announced.
+          </span>
+        </label>
+
         <div className="flex flex-wrap gap-3">
           <button
             type="submit"
