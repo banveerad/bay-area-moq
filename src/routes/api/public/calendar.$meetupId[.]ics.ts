@@ -7,7 +7,10 @@ export const Route = createFileRoute("/api/public/calendar/$meetupId.ics")({
   server: {
     handlers: {
       GET: async ({ params }) => {
-        const meetupId = params.meetupId;
+        const meetupId = (params as Record<string, string>)["meetupId.ics"]!.replace(
+          /\.ics$/i,
+          "",
+        );
         if (!/^[0-9a-f-]{36}$/i.test(meetupId)) {
           return new Response("Not found", { status: 404 });
         }
