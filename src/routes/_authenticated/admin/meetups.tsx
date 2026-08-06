@@ -116,7 +116,46 @@ function AdminMeetupsPage() {
   const reset = () => {
     setEditingId(null);
     setForm(empty);
+    setFormOpen(false);
   };
+
+  const startCreate = () => {
+    setEditingId(null);
+    setForm(empty);
+    setFormOpen(true);
+  };
+
+  const refreshAll = () => {
+    void queryClient.invalidateQueries({ queryKey: ["meetups"] });
+    void queryClient.invalidateQueries({ queryKey: ["admin-attendees"] });
+    void queryClient.invalidateQueries({ queryKey: ["rsvps"] });
+  };
+
+  const setRsvpStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: "going" | "waitlist" }) => {
+      const { error } = await supabase.from("rsvps").update({ status }).eq("id", id);
+      if (error) throw error;
+      return status;
+    },
+    onSuccess: (status) => {
+      refreshAll();
+      toast.success(status === "going" ? "Moved to going." : "Moved to waitlist.");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const removeRsvp = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("rsvps").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      refreshAll();
+      toast.success("RSVP removed.");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
 
   const save = useMutation({
     mutationFn: async () => {
