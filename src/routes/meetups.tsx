@@ -70,16 +70,24 @@ function MeetupsPage() {
         if (error) throw error;
         return "cancelled" as const;
       }
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("rsvps")
-        .insert({ meetup_id: meetupId, user_id: user!.id });
+        .insert({ meetup_id: meetupId, user_id: user!.id })
+        .select("status")
+        .single();
       if (error) throw error;
-      return "going" as const;
+      return (data?.status === "waitlist" ? "waitlist" : "going") as "waitlist" | "going";
     },
     onSuccess: (result) => {
       void queryClient.invalidateQueries({ queryKey: ["rsvps"] });
       void queryClient.invalidateQueries({ queryKey: ["meetups"] });
-      toast.success(result === "going" ? "You're on the list." : "RSVP cancelled.");
+      toast.success(
+        result === "going"
+          ? "You're on the list."
+          : result === "waitlist"
+            ? "This one is full — you're on the waitlist."
+            : "RSVP cancelled.",
+      );
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -89,8 +97,8 @@ function MeetupsPage() {
   const upcoming = meetups.filter((m) => m.status !== "past");
   const past = meetups.filter((m) => m.status === "past");
 
-  const countFor = (id: string) => meetups.find((m) => m.id === id)?.rsvp_count ?? 0;
-  const isGoing = (id: string) => rsvps.some((r) => r.meetup_id === id);
+  const myRsvp = (id: string) => rsvps.find((r) => r.meetup_id === id);
+
 
 
   return (
