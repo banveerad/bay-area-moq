@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import heroImage from "@/assets/hero-moq.jpg";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import { formatEventDate, type MeetupRow } from "@/lib/meetups";
 
 
@@ -26,6 +28,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { user, isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
+
   const meetupsQuery = useQuery({
     queryKey: ["meetups"],
     queryFn: async () => {
@@ -40,9 +45,59 @@ function Index() {
     },
   });
 
+  const rsvpsQuery = useQuery({
+    queryKey: ["rsvps", user?.id],
+    enabled: isAuthenticated,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("rsvps")
+        .select("meetup_id, status")
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const toggleRsvp = useMutation({
+    mutationFn: async ({ meetupId, going }: { meetupId: string; going: boolean }) => {
+      if (going) {
+        const { error } = await supabase
+          .from("rsvps")
+          .delete()
+          .eq("meetup_id", meetupId)
+          .eq("user_id", user!.id);
+        if (error) throw error;
+        return "cancelled" as const;
+      }
+      const { data, error } = await supabase
+        .from("rsvps")
+        .insert({ meetup_id: meetupId, user_id: user!.id })
+        .select("status")
+        .single();
+      if (error) throw error;
+      return (data?.status === "waitlist" ? "waitlist" : "going") as "waitlist" | "going";
+    },
+    onSuccess: (result) => {
+      void queryClient.invalidateQueries({ queryKey: ["rsvps"] });
+      void queryClient.invalidateQueries({ queryKey: ["meetups"] });
+      toast.success(
+        result === "going"
+          ? "You're on the list."
+          : result === "waitlist"
+            ? "This one is full — you're on the waitlist."
+            : "RSVP cancelled.",
+      );
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const rsvps = rsvpsQuery.data ?? [];
+  const myRsvp = (id: string) => rsvps.find((r) => r.meetup_id === id);
+
   const upcoming = (meetupsQuery.data ?? [])
     .filter((m) => m.status !== "past")
     .slice(0, 2);
+
 
 
   return (
@@ -90,19 +145,65 @@ function Index() {
           </Link>
         </div>
         <div className="mt-8 grid gap-6 md:grid-cols-2">
-          {upcoming.map((m) => (
-            <article key={m.id} className="border border-border bg-surface p-7">
-              <p className="font-display text-xs tracking-widest text-ember uppercase">
-                {formatEventDate(m.event_date)} · {m.time_label}
-              </p>
-              <h3 className="mt-4 text-lg leading-snug">{m.title}</h3>
-              <p className="mt-3 text-sm text-muted-foreground">{m.summary}</p>
-              <p className="mt-6 font-display text-xs text-muted-foreground">
-                {m.venue} — {m.city}
-              </p>
-            </article>
-          ))}
+          {upcoming.map((m) => {
+            const mine = myRsvp(m.id);
+            const going = Boolean(mine);
+            const full = m.capacity != null && m.rsvp_count >= m.capacity;
+            return (
+              <article key={m.id} className="border border-border bg-surface p-7">
+                <p className="font-display text-xs tracking-widest text-ember uppercase">
+                  {formatEventDate(m.event_date)} · {m.time_label}
+                </p>
+                <h3 className="mt-4 text-lg leading-snug">{m.title}</h3>
+                <p className="mt-3 text-sm text-muted-foreground">{m.summary}</p>
+                <p className="mt-6 font-display text-xs text-muted-foreground">
+                  {m.venue} — {m.city}
+                </p>
+
+                <div className="mt-6 border-t border-border pt-5">
+                  {isAuthenticated ? (
+                    <>
+                      <button
+                        type="button"
+                        disabled={toggleRsvp.isPending}
+                        onClick={() => toggleRsvp.mutate({ meetupId: m.id, going })}
+                        className={`border px-4 py-2 font-display text-xs tracking-widest uppercase transition-colors disabled:opacity-50 ${
+                          going
+                            ? "border-border text-muted-foreground hover:text-foreground"
+                            : "border-ember text-ember hover:bg-ember hover:text-background"
+                        }`}
+                      >
+                        {going
+                          ? mine?.status === "waitlist"
+                            ? "Leave waitlist"
+                            : "Cancel RSVP"
+                          : full
+                            ? "Join waitlist"
+                            : "RSVP"}
+                      </button>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        {m.rsvp_count}
+                        {m.capacity != null ? ` / ${m.capacity}` : ""} going
+                        {m.waitlist_count > 0 ? ` · ${m.waitlist_count} waitlisted` : ""}
+                      </p>
+                      {mine?.status === "waitlist" && (
+                        <p className="mt-1 text-xs text-ember">You're on the waitlist</p>
+                      )}
+                    </>
+                  ) : (
+                    <Link
+                      to="/auth"
+                      className="inline-block border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
+                    >
+                      {full ? "Sign in to join waitlist" : "Sign in to RSVP"}
+                    </Link>
+                  )}
+                </div>
+              </article>
+            );
+          })}
         </div>
+
       </section>
 
       <section className="border-t border-border rule-grid">
