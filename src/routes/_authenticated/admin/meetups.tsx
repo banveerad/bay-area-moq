@@ -32,6 +32,7 @@ type FormState = {
   city: string;
   summary: string;
   status: string;
+  capacity: string;
 };
 
 const empty: FormState = {
@@ -42,28 +43,73 @@ const empty: FormState = {
   city: "",
   summary: "",
   status: "open",
+  capacity: "",
 };
 
 const inputClass =
   "w-full border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ember";
+
+type AttendeeRow = {
+  id: string;
+  meetup_id: string;
+  user_id: string;
+  status: string;
+  created_at: string;
+};
 
 function AdminMeetupsPage() {
   const { isAdmin, loading } = useIsAdmin();
   const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(empty);
+  const [openList, setOpenList] = useState<string | null>(null);
 
   const meetupsQuery = useQuery({
     queryKey: ["meetups"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("meetups")
-        .select("id, title, event_date, time_label, venue, city, summary, status, rsvp_count")
+        .select(
+          "id, title, event_date, time_label, venue, city, summary, status, rsvp_count, waitlist_count, capacity",
+        )
         .order("event_date", { ascending: true });
       if (error) throw error;
       return (data ?? []) as MeetupRow[];
     },
   });
+
+  const attendeesQuery = useQuery({
+    queryKey: ["admin-attendees"],
+    enabled: isAdmin,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("rsvps")
+        .select("id, meetup_id, user_id, status, created_at")
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as AttendeeRow[];
+    },
+  });
+
+  const profilesQuery = useQuery({
+    queryKey: ["admin-profiles"],
+    enabled: isAdmin,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("profiles").select("id, display_name, company");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const nameFor = (userId: string) => {
+    const p = (profilesQuery.data ?? []).find((x) => x.id === userId);
+    if (!p) return "Member";
+    return [p.display_name || "Member", p.company].filter(Boolean).join(" · ");
+  };
+
+  const attendeesFor = (meetupId: string, status: string) =>
+    (attendeesQuery.data ?? []).filter((a) => a.meetup_id === meetupId && a.status === status);
+
 
   const reset = () => {
     setEditingId(null);
@@ -75,14 +121,21 @@ function AdminMeetupsPage() {
       if (!form.title || !form.event_date || !form.venue || !form.city) {
         throw new Error("Title, date, venue and city are required.");
       }
+      const trimmed = form.capacity.trim();
+      const capacity = trimmed === "" ? null : Number(trimmed);
+      if (capacity !== null && (!Number.isInteger(capacity) || capacity < 1)) {
+        throw new Error("Capacity must be a whole number of 1 or more, or left blank.");
+      }
+      const payload = { ...form, capacity };
       if (editingId) {
-        const { error } = await supabase.from("meetups").update(form).eq("id", editingId);
+        const { error } = await supabase.from("meetups").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("meetups").insert(form);
+        const { error } = await supabase.from("meetups").insert(payload);
         if (error) throw error;
       }
     },
+
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["meetups"] });
       toast.success(editingId ? "Meetup updated." : "Meetup added.");
@@ -199,6 +252,17 @@ function AdminMeetupsPage() {
               <option value="past">past</option>
             </select>
           </label>
+          <label className="text-sm">
+            <span className="text-muted-foreground">Capacity (blank = unlimited)</span>
+            <input
+              type="number"
+              min={1}
+              className={inputClass}
+              value={form.capacity}
+              onChange={(e) => setForm({ ...form, capacity: e.target.value })}
+            />
+          </label>
+
         </div>
         <div className="flex gap-3">
           <button
@@ -221,49 +285,99 @@ function AdminMeetupsPage() {
       </form>
 
       <ul className="mt-12 divide-y divide-border border-y border-border">
-        {(meetupsQuery.data ?? []).map((m) => (
-          <li key={m.id} className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="font-display text-xs tracking-widest uppercase text-ember">
-                {formatEventDate(m.event_date)} · {m.status}
-              </p>
-              <h3 className="mt-2 text-base">{m.title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {m.venue} — {m.city}
-              </p>
-            </div>
-            <div className="flex shrink-0 gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setEditingId(m.id);
-                  setForm({
-                    title: m.title,
-                    event_date: m.event_date,
-                    time_label: m.time_label,
-                    venue: m.venue,
-                    city: m.city,
-                    summary: m.summary,
-                    status: m.status,
-                  });
-                }}
-                className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
-              >
-                Edit
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (confirm(`Delete "${m.title}"?`)) remove.mutate(m.id);
-                }}
-                className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:border-ember hover:text-ember"
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-        ))}
+        {(meetupsQuery.data ?? []).map((m) => {
+          const goingList = attendeesFor(m.id, "going");
+          const waitList = attendeesFor(m.id, "waitlist");
+          const expanded = openList === m.id;
+          return (
+            <li key={m.id} className="py-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-display text-xs tracking-widest uppercase text-ember">
+                    {formatEventDate(m.event_date)} · {m.status}
+                  </p>
+                  <h3 className="mt-2 text-base">{m.title}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {m.venue} — {m.city}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {m.rsvp_count}
+                    {m.capacity != null ? ` / ${m.capacity}` : ""} going · {m.waitlist_count}{" "}
+                    waitlisted
+                  </p>
+                </div>
+                <div className="flex shrink-0 flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setOpenList(expanded ? null : m.id)}
+                    className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
+                  >
+                    {expanded ? "Hide members" : "Members"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingId(m.id);
+                      setForm({
+                        title: m.title,
+                        event_date: m.event_date,
+                        time_label: m.time_label,
+                        venue: m.venue,
+                        city: m.city,
+                        summary: m.summary,
+                        status: m.status,
+                        capacity: m.capacity != null ? String(m.capacity) : "",
+                      });
+                    }}
+                    className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirm(`Delete "${m.title}"?`)) remove.mutate(m.id);
+                    }}
+                    className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:border-ember hover:text-ember"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+
+              {expanded && (
+                <div className="mt-5 grid gap-6 border border-border bg-surface p-5 sm:grid-cols-2">
+                  <div>
+                    <p className="font-display text-xs tracking-widest uppercase text-ember">
+                      Going ({goingList.length})
+                    </p>
+                    <ol className="mt-3 space-y-1 text-sm text-muted-foreground">
+                      {goingList.length === 0 && <li>Nobody yet.</li>}
+                      {goingList.map((a) => (
+                        <li key={a.id}>{nameFor(a.user_id)}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div>
+                    <p className="font-display text-xs tracking-widest uppercase text-muted-foreground">
+                      Waitlist ({waitList.length})
+                    </p>
+                    <ol className="mt-3 space-y-1 text-sm text-muted-foreground">
+                      {waitList.length === 0 && <li>Nobody waiting.</li>}
+                      {waitList.map((a, i) => (
+                        <li key={a.id}>
+                          {i + 1}. {nameFor(a.user_id)}
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+              )}
+            </li>
+          );
+        })}
       </ul>
+
     </div>
   );
 }

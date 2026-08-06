@@ -8,6 +8,9 @@ export type MeetupRow = {
   summary: string;
   status: string;
   rsvp_count: number;
+  waitlist_count: number;
+  capacity: number | null;
+
 
 };
 

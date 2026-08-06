@@ -36,7 +36,9 @@ function MeetupsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("meetups")
-        .select("id, title, event_date, time_label, venue, city, summary, status, rsvp_count")
+        .select(
+          "id, title, event_date, time_label, venue, city, summary, status, rsvp_count, waitlist_count, capacity",
+        )
         .order("event_date", { ascending: true });
       if (error) throw error;
       return (data ?? []) as MeetupRow[];
@@ -49,12 +51,13 @@ function MeetupsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("rsvps")
-        .select("meetup_id")
+        .select("meetup_id, status")
         .eq("user_id", user!.id);
       if (error) throw error;
       return data ?? [];
     },
   });
+
 
   const toggleRsvp = useMutation({
     mutationFn: async ({ meetupId, going }: { meetupId: string; going: boolean }) => {
@@ -67,16 +70,24 @@ function MeetupsPage() {
         if (error) throw error;
         return "cancelled" as const;
       }
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("rsvps")
-        .insert({ meetup_id: meetupId, user_id: user!.id });
+        .insert({ meetup_id: meetupId, user_id: user!.id })
+        .select("status")
+        .single();
       if (error) throw error;
-      return "going" as const;
+      return (data?.status === "waitlist" ? "waitlist" : "going") as "waitlist" | "going";
     },
     onSuccess: (result) => {
       void queryClient.invalidateQueries({ queryKey: ["rsvps"] });
       void queryClient.invalidateQueries({ queryKey: ["meetups"] });
-      toast.success(result === "going" ? "You're on the list." : "RSVP cancelled.");
+      toast.success(
+        result === "going"
+          ? "You're on the list."
+          : result === "waitlist"
+            ? "This one is full — you're on the waitlist."
+            : "RSVP cancelled.",
+      );
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -86,8 +97,8 @@ function MeetupsPage() {
   const upcoming = meetups.filter((m) => m.status !== "past");
   const past = meetups.filter((m) => m.status === "past");
 
-  const countFor = (id: string) => meetups.find((m) => m.id === id)?.rsvp_count ?? 0;
-  const isGoing = (id: string) => rsvps.some((r) => r.meetup_id === id);
+  const myRsvp = (id: string) => rsvps.find((r) => r.meetup_id === id);
+
 
 
   return (
@@ -117,7 +128,9 @@ function MeetupsPage() {
 
       <ul className="mt-12 divide-y divide-border border-y border-border">
         {upcoming.map((m) => {
-          const going = isGoing(m.id);
+          const mine = myRsvp(m.id);
+          const going = Boolean(mine);
+          const full = m.capacity != null && m.rsvp_count >= m.capacity;
           return (
             <li key={m.id} className="grid gap-4 py-8 md:grid-cols-[210px_1fr_190px]">
               <div className="font-display text-sm">
@@ -137,6 +150,11 @@ function MeetupsPage() {
                     {statusLabel[m.status] ?? m.status}
                   </p>
                 )}
+                {full && m.status === "open" && (
+                  <p className="font-display text-xs tracking-widest uppercase text-muted-foreground">
+                    Full — waitlist
+                  </p>
+                )}
 
                 {isAuthenticated ? (
                   <>
@@ -150,18 +168,29 @@ function MeetupsPage() {
                           : "border-ember text-ember hover:bg-ember hover:text-background"
                       }`}
                     >
-                      {going ? "Cancel RSVP" : "RSVP"}
+                      {going
+                        ? mine?.status === "waitlist"
+                          ? "Leave waitlist"
+                          : "Cancel RSVP"
+                        : full
+                          ? "Join waitlist"
+                          : "RSVP"}
                     </button>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      {countFor(m.id)} going
+                      {m.rsvp_count}
+                      {m.capacity != null ? ` / ${m.capacity}` : ""} going
+                      {m.waitlist_count > 0 ? ` · ${m.waitlist_count} waitlisted` : ""}
                     </p>
+                    {mine?.status === "waitlist" && (
+                      <p className="mt-1 text-xs text-ember">You're on the waitlist</p>
+                    )}
                   </>
                 ) : (
                   <Link
                     to="/auth"
                     className="mt-3 inline-block border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
                   >
-                    Sign in to RSVP
+                    {full ? "Sign in to join waitlist" : "Sign in to RSVP"}
                   </Link>
                 )}
               </div>
