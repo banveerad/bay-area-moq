@@ -68,7 +68,7 @@ function AdminMembersPage() {
   const setRole = useMutation({
     mutationFn: async ({ userId, makeAdmin }: { userId: string; makeAdmin: boolean }) => {
       if (makeAdmin) {
-        const { error } = await supabase.from("user_roles").insert({ userId: undefined, user_id: userId, role: "admin" } as never);
+        const { error } = await supabase.from("user_roles").insert({ user_id: userId, role: "admin" });
         if (error) throw error;
       } else {
         const { error } = await supabase

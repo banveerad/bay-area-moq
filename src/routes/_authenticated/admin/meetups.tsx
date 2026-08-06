@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/hooks/use-is-admin";
 import { formatEventDate, type MeetupRow } from "@/lib/meetups";
+import { MemberProfileDialog } from "@/components/member-profile-dialog";
 
 export const Route = createFileRoute("/_authenticated/admin/meetups")({
   head: () => ({
@@ -64,6 +65,7 @@ function AdminMeetupsPage() {
   const [form, setForm] = useState<FormState>(empty);
   const [openList, setOpenList] = useState<string | null>(null);
   const [formOpen, setFormOpen] = useState(false);
+  const [profileUserId, setProfileUserId] = useState<string | null>(null);
 
 
   const meetupsQuery = useQuery({
@@ -224,6 +226,13 @@ function AdminMeetupsPage() {
           <p className="eyebrow">Organiser tools</p>
           <h1 className="mt-4 text-4xl">Manage meetups</h1>
         </div>
+        <div className="flex flex-wrap gap-3">
+        <Link
+          to="/admin/members"
+          className="border border-border px-5 py-3 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
+        >
+          Manage members
+        </Link>
         <button
           type="button"
           onClick={startCreate}
@@ -231,6 +240,7 @@ function AdminMeetupsPage() {
         >
           + Add meetup
         </button>
+        </div>
       </div>
 
       {formOpen && (
@@ -415,7 +425,13 @@ function AdminMeetupsPage() {
                       )}
                       {goingList.map((a) => (
                         <li key={a.id} className="flex flex-wrap items-center justify-between gap-2">
-                          <span className="text-muted-foreground">{nameFor(a.user_id)}</span>
+                          <button
+                            type="button"
+                            onClick={() => setProfileUserId(a.user_id)}
+                            className="text-left text-muted-foreground underline decoration-border underline-offset-4 hover:text-ember"
+                          >
+                            {nameFor(a.user_id)}
+                          </button>
                           <span className="flex gap-2">
                             <button
                               type="button"
@@ -451,9 +467,13 @@ function AdminMeetupsPage() {
                       )}
                       {waitList.map((a, i) => (
                         <li key={a.id} className="flex flex-wrap items-center justify-between gap-2">
-                          <span className="text-muted-foreground">
+                          <button
+                            type="button"
+                            onClick={() => setProfileUserId(a.user_id)}
+                            className="text-left text-muted-foreground underline decoration-border underline-offset-4 hover:text-ember"
+                          >
                             {i + 1}. {nameFor(a.user_id)}
-                          </span>
+                          </button>
                           <span className="flex gap-2">
                             <button
                               type="button"
@@ -493,6 +513,8 @@ function AdminMeetupsPage() {
           );
         })}
       </ul>
+
+      <MemberProfileDialog userId={profileUserId} onClose={() => setProfileUserId(null)} />
     </div>
   );
 }
