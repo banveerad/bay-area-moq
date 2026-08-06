@@ -48,13 +48,31 @@ function AccountPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("display_name, company, interests")
+        .select("display_name, company, interests, notify_new_meetups")
         .eq("id", user!.id)
         .maybeSingle();
       if (error) throw error;
       return data;
     },
   });
+
+  const setNotifyPref = useMutation({
+    mutationFn: async (value: boolean) => {
+      const { error } = await supabase
+        .from("profiles")
+        .upsert({ id: user!.id, notify_new_meetups: value }, { onConflict: "id" });
+      if (error) throw error;
+      return value;
+    },
+    onSuccess: (value) => {
+      void queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
+      toast.success(
+        value ? "We'll email you about new meetups." : "New-meetup emails turned off.",
+      );
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
   const { data: myRsvps = [], isLoading: rsvpsLoading } = useQuery({
     queryKey: ["my-rsvps", user?.id],
     enabled: Boolean(user?.id),
