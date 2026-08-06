@@ -63,20 +63,8 @@ function AboutPage() {
         </p>
       </div>
 
-      <h2 className="mt-14 text-2xl">How a night runs</h2>
-      <ol className="mt-6 space-y-px border border-border bg-border">
-        {[
-          ["6:00", "Doors, food, and the awkward name-tag portion."],
-          ["6:45", "One longer talk — usually 20 minutes on a specific piece of the stack."],
-          ["7:20", "Lightning demos. Five minutes, half-working software encouraged."],
-          ["8:00", "Open hacking against the shared relay until the venue closes."],
-        ].map(([time, what]) => (
-          <li key={time} className="grid gap-2 bg-surface p-6 sm:grid-cols-[90px_1fr]">
-            <p className="font-display text-sm text-ember">{time}</p>
-            <p className="text-sm text-muted-foreground">{what}</p>
-          </li>
-        ))}
-      </ol>
+      <h2 className="mt-14 text-2xl">House rules</h2>
+
 
       <h2 className="mt-14 text-2xl">House rules</h2>
       <div className="mt-6 grid gap-px bg-border sm:grid-cols-2">
