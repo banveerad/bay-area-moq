@@ -285,6 +285,22 @@ function AdminMeetupsPage() {
     onError: (error: Error) => toast.error(error.message),
   });
 
+  const announce = useServerFn(announceMeetup);
+
+  const sendAnnouncement = useMutation({
+    mutationFn: async (meetupId: string) => announce({ data: { meetupId } }),
+    onSuccess: (result) => {
+      void queryClient.invalidateQueries({ queryKey: ["meetups"] });
+      toast.success(
+        `Announcement sent to ${result.sent} member${result.sent === 1 ? "" : "s"}.` +
+          (result.skipped ? ` ${result.skipped} skipped.` : ""),
+      );
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+
+
   if (loading) {
     return <p className="mx-auto max-w-3xl px-5 py-20 text-muted-foreground">Checking access…</p>;
   }
