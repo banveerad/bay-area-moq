@@ -52,6 +52,39 @@ function AccountPage() {
       return data;
     },
   });
+  const { data: myRsvps = [], isLoading: rsvpsLoading } = useQuery({
+    queryKey: ["my-rsvps", user?.id],
+    enabled: Boolean(user?.id),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("rsvps")
+        .select(
+          "id, status, created_at, meetups(id, title, event_date, time_label, venue, city, status)",
+        )
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return (data ?? []).filter((r) => r.meetups);
+    },
+  });
+
+  const cancelRsvp = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("rsvps").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("RSVP cancelled.");
+      void queryClient.invalidateQueries({ queryKey: ["my-rsvps", user?.id] });
+      void queryClient.invalidateQueries({ queryKey: ["meetups"] });
+      void queryClient.invalidateQueries({ queryKey: ["rsvps"] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const sortedRsvps = [...myRsvps].sort((a, b) =>
+    (a.meetups!.event_date ?? "").localeCompare(b.meetups!.event_date ?? ""),
+  );
+
 
   useEffect(() => {
     if (profile) {
