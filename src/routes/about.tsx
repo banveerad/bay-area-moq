@@ -68,28 +68,19 @@ function AboutPage() {
         </div>
       </div>
 
-      <div className="mt-8 space-y-6 text-muted-foreground">
+      <div className="mt-8 space-y-4 text-muted-foreground">
         <p>
-          MoQ Bay Area started the way these things usually do: a hallway conversation
-          after a conference talk, a group chat, and then someone offering a room with a
-          projector. We are streaming engineers, transport nerds, codec people and a
-          steady stream of curious newcomers who want to understand where live video is
-          heading before it arrives.
+          We are streaming engineers, transport nerds, codec people and curious newcomers
+          building a real community around Media Over QUIC: sharing knowledge, showing what
+          people are building, arguing about the market, and chasing the unsolved problems.
         </p>
         <p>
-          The goal is simple: build a real community around Media Over QUIC. That means
-          sharing knowledge, showing what people are actually building, arguing about the
-          market opportunity, and naming the problems nobody has solved yet, then
-          chasing them down together. Not a users&apos; group for one product, not a
-          standards committee. Just a good tech group.
-        </p>
-        <p>
-          It is volunteer-run and free. Venues are donated by companies in the Bay who
-          care about the protocol; food is whatever the host can swing. Nobody is paid,
-          nothing is sponsored content, and the organisers rotate so it does not collapse
-          when one person gets busy.
+          Volunteer-run and free. Venues are donated by Bay Area companies that care about
+          the protocol. Not a users&apos; group, not a standards committee. Just a good tech
+          group.
         </p>
       </div>
+
 
 
       <h2 className="mt-14 text-2xl">What we are here to do</h2>
