@@ -285,49 +285,99 @@ function AdminMeetupsPage() {
       </form>
 
       <ul className="mt-12 divide-y divide-border border-y border-border">
-        {(meetupsQuery.data ?? []).map((m) => (
-          <li key={m.id} className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="font-display text-xs tracking-widest uppercase text-ember">
-                {formatEventDate(m.event_date)} · {m.status}
-              </p>
-              <h3 className="mt-2 text-base">{m.title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {m.venue} — {m.city}
-              </p>
-            </div>
-            <div className="flex shrink-0 gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setEditingId(m.id);
-                  setForm({
-                    title: m.title,
-                    event_date: m.event_date,
-                    time_label: m.time_label,
-                    venue: m.venue,
-                    city: m.city,
-                    summary: m.summary,
-                    status: m.status,
-                  });
-                }}
-                className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
-              >
-                Edit
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (confirm(`Delete "${m.title}"?`)) remove.mutate(m.id);
-                }}
-                className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:border-ember hover:text-ember"
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-        ))}
+        {(meetupsQuery.data ?? []).map((m) => {
+          const goingList = attendeesFor(m.id, "going");
+          const waitList = attendeesFor(m.id, "waitlist");
+          const expanded = openList === m.id;
+          return (
+            <li key={m.id} className="py-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-display text-xs tracking-widest uppercase text-ember">
+                    {formatEventDate(m.event_date)} · {m.status}
+                  </p>
+                  <h3 className="mt-2 text-base">{m.title}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {m.venue} — {m.city}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {m.rsvp_count}
+                    {m.capacity != null ? ` / ${m.capacity}` : ""} going · {m.waitlist_count}{" "}
+                    waitlisted
+                  </p>
+                </div>
+                <div className="flex shrink-0 flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setOpenList(expanded ? null : m.id)}
+                    className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
+                  >
+                    {expanded ? "Hide members" : "Members"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingId(m.id);
+                      setForm({
+                        title: m.title,
+                        event_date: m.event_date,
+                        time_label: m.time_label,
+                        venue: m.venue,
+                        city: m.city,
+                        summary: m.summary,
+                        status: m.status,
+                        capacity: m.capacity != null ? String(m.capacity) : "",
+                      });
+                    }}
+                    className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirm(`Delete "${m.title}"?`)) remove.mutate(m.id);
+                    }}
+                    className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:border-ember hover:text-ember"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+
+              {expanded && (
+                <div className="mt-5 grid gap-6 border border-border bg-surface p-5 sm:grid-cols-2">
+                  <div>
+                    <p className="font-display text-xs tracking-widest uppercase text-ember">
+                      Going ({goingList.length})
+                    </p>
+                    <ol className="mt-3 space-y-1 text-sm text-muted-foreground">
+                      {goingList.length === 0 && <li>Nobody yet.</li>}
+                      {goingList.map((a) => (
+                        <li key={a.id}>{nameFor(a.user_id)}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div>
+                    <p className="font-display text-xs tracking-widest uppercase text-muted-foreground">
+                      Waitlist ({waitList.length})
+                    </p>
+                    <ol className="mt-3 space-y-1 text-sm text-muted-foreground">
+                      {waitList.length === 0 && <li>Nobody waiting.</li>}
+                      {waitList.map((a, i) => (
+                        <li key={a.id}>
+                          {i + 1}. {nameFor(a.user_id)}
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+              )}
+            </li>
+          );
+        })}
       </ul>
+
     </div>
   );
 }
