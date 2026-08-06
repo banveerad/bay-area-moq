@@ -36,7 +36,9 @@ function MeetupsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("meetups")
-        .select("id, title, event_date, time_label, venue, city, summary, status, rsvp_count")
+        .select(
+          "id, title, event_date, time_label, venue, city, summary, status, rsvp_count, waitlist_count, capacity",
+        )
         .order("event_date", { ascending: true });
       if (error) throw error;
       return (data ?? []) as MeetupRow[];
@@ -49,12 +51,13 @@ function MeetupsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("rsvps")
-        .select("meetup_id")
+        .select("meetup_id, status")
         .eq("user_id", user!.id);
       if (error) throw error;
       return data ?? [];
     },
   });
+
 
   const toggleRsvp = useMutation({
     mutationFn: async ({ meetupId, going }: { meetupId: string; going: boolean }) => {
