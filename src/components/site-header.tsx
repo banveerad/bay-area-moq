@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/use-auth";
 
 const links = [
   { to: "/meetups", label: "Meetups" },
@@ -10,6 +11,8 @@ const links = [
 ] as const;
 
 export function SiteHeader() {
+  const { isAuthenticated, loading } = useAuth();
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
@@ -29,6 +32,23 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
+          {!loading &&
+            (isAuthenticated ? (
+              <Link
+                to="/account"
+                className="ml-2 border border-border px-3 py-2 text-muted-foreground transition-colors hover:text-foreground"
+                activeProps={{ className: "ml-2 border border-ember px-3 py-2 text-foreground" }}
+              >
+                Account
+              </Link>
+            ) : (
+              <Link
+                to="/auth"
+                className="ml-2 border border-ember px-3 py-2 text-ember transition-colors hover:bg-ember hover:text-background"
+              >
+                Sign in
+              </Link>
+            ))}
         </nav>
       </div>
     </header>
