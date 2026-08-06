@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           event_date: string
           id: string
+          rsvp_count: number
           status: string
           summary: string
           time_label: string
@@ -32,6 +33,7 @@ export type Database = {
           created_at?: string
           event_date: string
           id?: string
+          rsvp_count?: number
           status?: string
           summary?: string
           time_label?: string
@@ -44,6 +46,7 @@ export type Database = {
           created_at?: string
           event_date?: string
           id?: string
+          rsvp_count?: number
           status?: string
           summary?: string
           time_label?: string
@@ -132,21 +135,7 @@ export type Database = {
       }
     }
     Views: {
-      meetup_rsvp_counts: {
-        Row: {
-          going_count: number | null
-          meetup_id: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "rsvps_meetup_id_fkey"
-            columns: ["meetup_id"]
-            isOneToOne: false
-            referencedRelation: "meetups"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       has_role: {
