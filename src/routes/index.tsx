@@ -139,6 +139,8 @@ function Index() {
           <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
             A community of video streaming engineers, protocol nerds and codec people
             figuring out what live video looks like once it stops pretending to be HTTP.
+            We cover the whole stack around it too: encoding, packaging, ABR, ads and ad
+            insertion, playback and QoE.
           </p>
           <div className="mt-9">
             <Link
