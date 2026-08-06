@@ -77,6 +77,26 @@ function AboutPage() {
         A tech group for the people building live video&apos;s next transport.
       </h1>
 
+      <div className="mt-8 flex items-center gap-5 bg-surface p-6">
+        <img
+          src={organiserPhoto.url}
+          alt="Banashankar Veerad, organiser of MoQ Bay Area"
+          className="h-20 w-20 shrink-0 rounded-full object-cover"
+        />
+        <div>
+          <p className="eyebrow">Run by</p>
+          <h2 className="mt-1 font-display text-sm">Banashankar Veerad</h2>
+          <a
+            href="https://www.linkedin.com/in/banashankar-veerad-b5892923/"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="mt-1 inline-block text-sm text-ember hover:underline"
+          >
+            LinkedIn
+          </a>
+        </div>
+      </div>
+
       <div className="mt-8 space-y-6 text-muted-foreground">
         <p>
           MoQ Bay Area started the way these things usually do: a hallway conversation
@@ -100,26 +120,6 @@ function AboutPage() {
         </p>
       </div>
 
-      <h2 className="mt-14 text-2xl">Run by</h2>
-      <div className="mt-6 flex items-center gap-5 bg-surface p-6">
-        <img
-          src={organiserPhoto.url}
-          alt="Banashankar Veerad, organiser of MoQ Bay Area"
-          loading="lazy"
-          className="h-20 w-20 shrink-0 rounded-full object-cover"
-        />
-        <div>
-          <h3 className="font-display text-sm">Banashankar Veerad</h3>
-          <a
-            href="https://www.linkedin.com/in/banashankar-veerad-b5892923/"
-            target="_blank"
-            rel="noreferrer noopener"
-            className="mt-1 inline-block text-sm text-ember hover:underline"
-          >
-            LinkedIn
-          </a>
-        </div>
-      </div>
 
       <h2 className="mt-14 text-2xl">What we are here to do</h2>
       <div className="mt-6 grid gap-px bg-border sm:grid-cols-2">
