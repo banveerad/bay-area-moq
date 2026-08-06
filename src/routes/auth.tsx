@@ -70,8 +70,12 @@ function AuthPage() {
       toast.error(parsed.error.issues[0]?.message ?? "Check your details");
       return;
     }
+    if (mode === "signup" && !acceptedTerms) {
+      toast.error("Please accept the terms and conditions to create an account");
+      return;
+    }
     setBusy(true);
-    try {
+
       if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
           email: parsed.data.email,
