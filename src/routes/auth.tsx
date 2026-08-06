@@ -213,9 +213,27 @@ function AuthPage() {
                 className="mt-2 w-full border border-border bg-surface px-3 py-2.5 text-sm outline-none focus:border-ember"
               />
             </label>
+            {mode === "signup" && (
+              <label className="flex items-start gap-3 text-sm text-muted-foreground">
+                <input
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="mt-0.5 size-4 shrink-0 accent-ember"
+                />
+                <span>
+                  I agree to the{" "}
+                  <Link to="/terms" className="text-ember hover:underline">
+                    terms and conditions
+                  </Link>{" "}
+                  and the community code of conduct.
+                </span>
+              </label>
+            )}
             <button
               type="submit"
-              disabled={busy}
+              disabled={busy || (mode === "signup" && !acceptedTerms)}
+
               className="w-full bg-ember px-4 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {mode === "signin" ? "Sign in" : "Create account"}
