@@ -145,19 +145,65 @@ function Index() {
           </Link>
         </div>
         <div className="mt-8 grid gap-6 md:grid-cols-2">
-          {upcoming.map((m) => (
-            <article key={m.id} className="border border-border bg-surface p-7">
-              <p className="font-display text-xs tracking-widest text-ember uppercase">
-                {formatEventDate(m.event_date)} · {m.time_label}
-              </p>
-              <h3 className="mt-4 text-lg leading-snug">{m.title}</h3>
-              <p className="mt-3 text-sm text-muted-foreground">{m.summary}</p>
-              <p className="mt-6 font-display text-xs text-muted-foreground">
-                {m.venue} — {m.city}
-              </p>
-            </article>
-          ))}
+          {upcoming.map((m) => {
+            const mine = myRsvp(m.id);
+            const going = Boolean(mine);
+            const full = m.capacity != null && m.rsvp_count >= m.capacity;
+            return (
+              <article key={m.id} className="border border-border bg-surface p-7">
+                <p className="font-display text-xs tracking-widest text-ember uppercase">
+                  {formatEventDate(m.event_date)} · {m.time_label}
+                </p>
+                <h3 className="mt-4 text-lg leading-snug">{m.title}</h3>
+                <p className="mt-3 text-sm text-muted-foreground">{m.summary}</p>
+                <p className="mt-6 font-display text-xs text-muted-foreground">
+                  {m.venue} — {m.city}
+                </p>
+
+                <div className="mt-6 border-t border-border pt-5">
+                  {isAuthenticated ? (
+                    <>
+                      <button
+                        type="button"
+                        disabled={toggleRsvp.isPending}
+                        onClick={() => toggleRsvp.mutate({ meetupId: m.id, going })}
+                        className={`border px-4 py-2 font-display text-xs tracking-widest uppercase transition-colors disabled:opacity-50 ${
+                          going
+                            ? "border-border text-muted-foreground hover:text-foreground"
+                            : "border-ember text-ember hover:bg-ember hover:text-background"
+                        }`}
+                      >
+                        {going
+                          ? mine?.status === "waitlist"
+                            ? "Leave waitlist"
+                            : "Cancel RSVP"
+                          : full
+                            ? "Join waitlist"
+                            : "RSVP"}
+                      </button>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        {m.rsvp_count}
+                        {m.capacity != null ? ` / ${m.capacity}` : ""} going
+                        {m.waitlist_count > 0 ? ` · ${m.waitlist_count} waitlisted` : ""}
+                      </p>
+                      {mine?.status === "waitlist" && (
+                        <p className="mt-1 text-xs text-ember">You're on the waitlist</p>
+                      )}
+                    </>
+                  ) : (
+                    <Link
+                      to="/auth"
+                      className="inline-block border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
+                    >
+                      {full ? "Sign in to join waitlist" : "Sign in to RSVP"}
+                    </Link>
+                  )}
+                </div>
+              </article>
+            );
+          })}
         </div>
+
       </section>
 
       <section className="border-t border-border rule-grid">
