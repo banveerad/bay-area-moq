@@ -64,9 +64,6 @@ function AboutPage() {
       </div>
 
       <h2 className="mt-14 text-2xl">House rules</h2>
-
-
-      <h2 className="mt-14 text-2xl">House rules</h2>
       <div className="mt-6 grid gap-px bg-border sm:grid-cols-2">
         {principles.map(([title, body]) => (
           <div key={title} className="bg-surface p-6">
