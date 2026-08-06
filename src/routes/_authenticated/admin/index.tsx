@@ -32,7 +32,13 @@ const tools = [
     label: "Manage members",
     description: "Search members, view profiles and RSVP history, grant organiser access.",
   },
+  {
+    to: "/admin/resources",
+    label: "Manage resources",
+    description: "Curate the specs, repos and talks listed on the public Resources page.",
+  },
 ] as const;
+
 
 function AdminHomePage() {
   const { isAdmin, hasAccess, loading } = useMeetupAccess();
