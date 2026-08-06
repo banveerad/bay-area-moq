@@ -58,7 +58,7 @@ function AdminMeetupsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("meetups")
-        .select("id, title, event_date, time_label, venue, city, summary, status")
+        .select("id, title, event_date, time_label, venue, city, summary, status, rsvp_count")
         .order("event_date", { ascending: true });
       if (error) throw error;
       return (data ?? []) as MeetupRow[];
