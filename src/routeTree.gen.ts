@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as MeetupsRouteImport } from './routes/meetups'
 import { Route as ResourcesRouteImport } from './routes/resources'
@@ -18,6 +20,16 @@ import { Route as WhatIsMoqRouteImport } from './routes/what-is-moq'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JoinRoute = JoinRouteImport.update({
@@ -43,6 +55,8 @@ const WhatIsMoqRoute = WhatIsMoqRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/join': typeof JoinRoute
   '/meetups': typeof MeetupsRoute
   '/resources': typeof ResourcesRoute
@@ -50,6 +64,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/join': typeof JoinRoute
   '/meetups': typeof MeetupsRoute
   '/resources': typeof ResourcesRoute
@@ -58,6 +74,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/join': typeof JoinRoute
   '/meetups': typeof MeetupsRoute
   '/resources': typeof ResourcesRoute
@@ -65,14 +83,38 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/join' | '/meetups' | '/resources' | '/what-is-moq'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/join'
+    | '/meetups'
+    | '/resources'
+    | '/what-is-moq'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/join' | '/meetups' | '/resources' | '/what-is-moq'
-  id: '__root__' | '/' | '/join' | '/meetups' | '/resources' | '/what-is-moq'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/join'
+    | '/meetups'
+    | '/resources'
+    | '/what-is-moq'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/join'
+    | '/meetups'
+    | '/resources'
+    | '/what-is-moq'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
   JoinRoute: typeof JoinRoute
   MeetupsRoute: typeof MeetupsRoute
   ResourcesRoute: typeof ResourcesRoute
@@ -86,6 +128,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/join': {
@@ -121,6 +177,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
   JoinRoute: JoinRoute,
   MeetupsRoute: MeetupsRoute,
   ResourcesRoute: ResourcesRoute,
