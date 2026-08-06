@@ -132,7 +132,21 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      meetup_rsvp_counts: {
+        Row: {
+          going_count: number | null
+          meetup_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rsvps_meetup_id_fkey"
+            columns: ["meetup_id"]
+            isOneToOne: false
+            referencedRelation: "meetups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       has_role: {
