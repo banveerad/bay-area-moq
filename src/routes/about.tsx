@@ -3,17 +3,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About MoQ Bay Area — Who We Are" },
+      { title: "About MoQ Bay Area: Who We Are" },
       {
         name: "description",
         content:
           "MoQ Bay Area is a volunteer-run tech group for Media Over QUIC: knowledge sharing, demos of what people are building, market opportunities, and open problems worth solving.",
       },
-      { property: "og:title", content: "About MoQ Bay Area — Who We Are" },
+      { property: "og:title", content: "About MoQ Bay Area: Who We Are" },
       {
         property: "og:description",
         content:
-          "A Bay Area community around Media Over QUIC — talks, demos, market discussion and problem-solving, run by volunteers.",
+          "A Bay Area community around Media Over QUIC. Talks, demos, market discussion and problem-solving, run by volunteers.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -25,11 +25,11 @@ export const Route = createFileRoute("/about")({
 const goals = [
   [
     "Build the community",
-    "Put the people working on Media Over QUIC in the same room on a regular cadence — engineers, researchers, product folks and newcomers alike.",
+    "Put the people working on Media Over QUIC in the same room on a regular cadence: engineers, researchers, product folks and newcomers alike.",
   ],
   [
     "Share what we know",
-    "Deep dives on transport, packaging, latency and codecs. Bring the trace, the graph, the ugly workaround — the useful details live there.",
+    "Deep dives on transport, packaging, latency and codecs. Bring the trace, the graph, the ugly workaround. The useful details live there.",
   ],
   [
     "Show what you are building",
@@ -45,7 +45,7 @@ const goals = [
   ],
   [
     "Find the solutions",
-    "Turn those problems into experiments, patches, docs and follow-up sessions — and report back at the next meetup.",
+    "Turn those problems into experiments, patches, docs and follow-up sessions, and report back at the next meetup.",
   ],
 ];
 
@@ -87,7 +87,7 @@ function AboutPage() {
         <p>
           The goal is simple: build a real community around Media Over QUIC. That means
           sharing knowledge, showing what people are actually building, arguing about the
-          market opportunity, and naming the problems nobody has solved yet — then
+          market opportunity, and naming the problems nobody has solved yet, then
           chasing them down together. Not a users&apos; group for one product, not a
           standards committee. Just a good tech group.
         </p>
