@@ -28,6 +28,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { user, isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
+
   const meetupsQuery = useQuery({
     queryKey: ["meetups"],
     queryFn: async () => {
@@ -42,9 +45,59 @@ function Index() {
     },
   });
 
+  const rsvpsQuery = useQuery({
+    queryKey: ["rsvps", user?.id],
+    enabled: isAuthenticated,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("rsvps")
+        .select("meetup_id, status")
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const toggleRsvp = useMutation({
+    mutationFn: async ({ meetupId, going }: { meetupId: string; going: boolean }) => {
+      if (going) {
+        const { error } = await supabase
+          .from("rsvps")
+          .delete()
+          .eq("meetup_id", meetupId)
+          .eq("user_id", user!.id);
+        if (error) throw error;
+        return "cancelled" as const;
+      }
+      const { data, error } = await supabase
+        .from("rsvps")
+        .insert({ meetup_id: meetupId, user_id: user!.id })
+        .select("status")
+        .single();
+      if (error) throw error;
+      return (data?.status === "waitlist" ? "waitlist" : "going") as "waitlist" | "going";
+    },
+    onSuccess: (result) => {
+      void queryClient.invalidateQueries({ queryKey: ["rsvps"] });
+      void queryClient.invalidateQueries({ queryKey: ["meetups"] });
+      toast.success(
+        result === "going"
+          ? "You're on the list."
+          : result === "waitlist"
+            ? "This one is full — you're on the waitlist."
+            : "RSVP cancelled.",
+      );
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const rsvps = rsvpsQuery.data ?? [];
+  const myRsvp = (id: string) => rsvps.find((r) => r.meetup_id === id);
+
   const upcoming = (meetupsQuery.data ?? [])
     .filter((m) => m.status !== "past")
     .slice(0, 2);
+
 
 
   return (
