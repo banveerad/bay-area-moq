@@ -18,7 +18,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "bay-area-moq"
+const SITE_NAME = "Bay Area MoQ"
 const ROOT_DOMAIN = "moqbayarea.com"
 
 // Sample data for preview mode ONLY (not used in actual email sending).

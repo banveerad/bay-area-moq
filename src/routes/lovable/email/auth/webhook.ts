@@ -9,7 +9,7 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 // Configuration
-const SITE_NAME = "bay-area-moq"
+const SITE_NAME = "Bay Area MoQ"
 const SENDER_DOMAIN = "notify.moqbayarea.com"
 const ROOT_DOMAIN = "moqbayarea.com"
 const FROM_DOMAIN = "notify.moqbayarea.com"
