@@ -10,33 +10,73 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as JoinRouteImport } from './routes/join'
+import { Route as MeetupsRouteImport } from './routes/meetups'
+import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as WhatIsMoqRouteImport } from './routes/what-is-moq'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeetupsRoute = MeetupsRouteImport.update({
+  id: '/meetups',
+  path: '/meetups',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResourcesRoute = ResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WhatIsMoqRoute = WhatIsMoqRouteImport.update({
+  id: '/what-is-moq',
+  path: '/what-is-moq',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/join': typeof JoinRoute
+  '/meetups': typeof MeetupsRoute
+  '/resources': typeof ResourcesRoute
+  '/what-is-moq': typeof WhatIsMoqRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/join': typeof JoinRoute
+  '/meetups': typeof MeetupsRoute
+  '/resources': typeof ResourcesRoute
+  '/what-is-moq': typeof WhatIsMoqRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/join': typeof JoinRoute
+  '/meetups': typeof MeetupsRoute
+  '/resources': typeof ResourcesRoute
+  '/what-is-moq': typeof WhatIsMoqRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/join' | '/meetups' | '/resources' | '/what-is-moq'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/join' | '/meetups' | '/resources' | '/what-is-moq'
+  id: '__root__' | '/' | '/join' | '/meetups' | '/resources' | '/what-is-moq'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  JoinRoute: typeof JoinRoute
+  MeetupsRoute: typeof MeetupsRoute
+  ResourcesRoute: typeof ResourcesRoute
+  WhatIsMoqRoute: typeof WhatIsMoqRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +88,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meetups': {
+      id: '/meetups'
+      path: '/meetups'
+      fullPath: '/meetups'
+      preLoaderRoute: typeof MeetupsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resources': {
+      id: '/resources'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/what-is-moq': {
+      id: '/what-is-moq'
+      path: '/what-is-moq'
+      fullPath: '/what-is-moq'
+      preLoaderRoute: typeof WhatIsMoqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  JoinRoute: JoinRoute,
+  MeetupsRoute: MeetupsRoute,
+  ResourcesRoute: ResourcesRoute,
+  WhatIsMoqRoute: WhatIsMoqRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
