@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useIsAdmin } from "@/hooks/use-is-admin";
 import { formatEventDate, statusLabel, type MeetupRow } from "@/lib/meetups";
 import { AddToCalendar } from "@/components/add-to-calendar";
+import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
 
 export const Route = createFileRoute("/meetups")({
   head: () => ({
@@ -60,6 +62,8 @@ function MeetupsPage() {
   });
 
 
+  const notify = useServerFn(notifyRsvpChange);
+
   const toggleRsvp = useMutation({
     mutationFn: async ({ meetupId, going }: { meetupId: string; going: boolean }) => {
       if (going) {
@@ -69,6 +73,11 @@ function MeetupsPage() {
           .eq("meetup_id", meetupId)
           .eq("user_id", user!.id);
         if (error) throw error;
+        try {
+          await notify({ data: { meetupId, action: "cancelled" } });
+        } catch (err) {
+          console.error(err);
+        }
         return "cancelled" as const;
       }
       const { data, error } = await supabase
@@ -77,7 +86,15 @@ function MeetupsPage() {
         .select("status")
         .single();
       if (error) throw error;
-      return (data?.status === "waitlist" ? "waitlist" : "going") as "waitlist" | "going";
+      const status = (data?.status === "waitlist" ? "waitlist" : "going") as
+        | "waitlist"
+        | "going";
+      try {
+        await notify({ data: { meetupId, action: status } });
+      } catch (err) {
+        console.error(err);
+      }
+      return status;
     },
     onSuccess: (result) => {
       void queryClient.invalidateQueries({ queryKey: ["rsvps"] });

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/hooks/use-is-admin";
 import { formatEventDate, type MeetupRow } from "@/lib/meetups";
+import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
 import { MemberProfileDialog } from "@/components/member-profile-dialog";
 
 export const Route = createFileRoute("/_authenticated/admin/meetups")({
@@ -133,10 +135,28 @@ function AdminMeetupsPage() {
     void queryClient.invalidateQueries({ queryKey: ["rsvps"] });
   };
 
+  const notify = useServerFn(notifyRsvpChange);
+
+
   const setRsvpStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: "going" | "waitlist" }) => {
+    mutationFn: async ({
+      id,
+      status,
+      meetupId,
+      userId,
+    }: {
+      id: string;
+      status: "going" | "waitlist";
+      meetupId: string;
+      userId: string;
+    }) => {
       const { error } = await supabase.from("rsvps").update({ status }).eq("id", id);
       if (error) throw error;
+      try {
+        await notify({ data: { meetupId, targetUserId: userId, action: status } });
+      } catch (err) {
+        console.error(err);
+      }
       return status;
     },
     onSuccess: (status) => {
@@ -147,9 +167,22 @@ function AdminMeetupsPage() {
   });
 
   const removeRsvp = useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async ({
+      id,
+      meetupId,
+      userId,
+    }: {
+      id: string;
+      meetupId: string;
+      userId: string;
+    }) => {
       const { error } = await supabase.from("rsvps").delete().eq("id", id);
       if (error) throw error;
+      try {
+        await notify({ data: { meetupId, targetUserId: userId, action: "removed" } });
+      } catch (err) {
+        console.error(err);
+      }
     },
     onSuccess: () => {
       refreshAll();
@@ -429,7 +462,7 @@ function AdminMeetupsPage() {
                             <button
                               type="button"
                               disabled={setRsvpStatus.isPending}
-                              onClick={() => setRsvpStatus.mutate({ id: a.id, status: "waitlist" })}
+                              onClick={() => setRsvpStatus.mutate({ id: a.id, status: "waitlist", meetupId: m.id, userId: a.user_id })}
                               className="border border-border px-2 py-1 text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground disabled:opacity-50"
                             >
                               → Waitlist
@@ -439,7 +472,7 @@ function AdminMeetupsPage() {
                               disabled={removeRsvp.isPending}
                               onClick={() => {
                                 if (confirm(`Remove ${nameFor(a.user_id)}'s RSVP?`))
-                                  removeRsvp.mutate(a.id);
+                                  removeRsvp.mutate({ id: a.id, meetupId: m.id, userId: a.user_id });
                               }}
                               className="border border-destructive px-2 py-1 text-xs uppercase tracking-wider text-destructive hover:bg-destructive hover:text-background disabled:opacity-50"
                             >
@@ -471,7 +504,7 @@ function AdminMeetupsPage() {
                             <button
                               type="button"
                               disabled={setRsvpStatus.isPending}
-                              onClick={() => setRsvpStatus.mutate({ id: a.id, status: "going" })}
+                              onClick={() => setRsvpStatus.mutate({ id: a.id, status: "going", meetupId: m.id, userId: a.user_id })}
 
                               className="border border-ember px-2 py-1 text-xs uppercase tracking-wider text-ember hover:bg-ember hover:text-background disabled:opacity-50"
                             >
@@ -482,7 +515,7 @@ function AdminMeetupsPage() {
                               disabled={removeRsvp.isPending}
                               onClick={() => {
                                 if (confirm(`Remove ${nameFor(a.user_id)} from the waitlist?`))
-                                  removeRsvp.mutate(a.id);
+                                  removeRsvp.mutate({ id: a.id, meetupId: m.id, userId: a.user_id });
                               }}
                               className="border border-destructive px-2 py-1 text-xs uppercase tracking-wider text-destructive hover:bg-destructive hover:text-background disabled:opacity-50"
                             >
