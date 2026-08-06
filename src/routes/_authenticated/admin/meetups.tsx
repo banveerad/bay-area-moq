@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useIsAdmin } from "@/hooks/use-is-admin";
+import { useMeetupAccess } from "@/hooks/use-meetup-access";
 import { formatEventDate, type MeetupRow } from "@/lib/meetups";
 import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
 import { MemberProfileDialog } from "@/components/member-profile-dialog";
@@ -61,7 +61,9 @@ type AttendeeRow = {
 };
 
 function AdminMeetupsPage() {
-  const { isAdmin, loading } = useIsAdmin();
+  const { isAdmin, managedIds, hasAccess, loading } = useMeetupAccess();
+  const [managerMeetupId, setManagerMeetupId] = useState<string | null>(null);
+  const [managerUserId, setManagerUserId] = useState("");
   const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(empty);
@@ -86,7 +88,7 @@ function AdminMeetupsPage() {
 
   const attendeesQuery = useQuery({
     queryKey: ["admin-attendees"],
-    enabled: isAdmin,
+    enabled: hasAccess,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("rsvps")
@@ -99,7 +101,7 @@ function AdminMeetupsPage() {
 
   const profilesQuery = useQuery({
     queryKey: ["admin-profiles"],
-    enabled: isAdmin,
+    enabled: hasAccess,
     queryFn: async () => {
       const { data, error } = await supabase.from("profiles").select("id, display_name, company");
       if (error) throw error;
@@ -237,7 +239,7 @@ function AdminMeetupsPage() {
     return <p className="mx-auto max-w-3xl px-5 py-20 text-muted-foreground">Checking access…</p>;
   }
 
-  if (!isAdmin) {
+  if (!hasAccess) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-20">
         <h1 className="text-3xl">Page not found</h1>

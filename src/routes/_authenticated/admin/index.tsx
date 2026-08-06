@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useIsAdmin } from "@/hooks/use-is-admin";
+import { useMeetupAccess } from "@/hooks/use-meetup-access";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () => ({
@@ -35,13 +35,13 @@ const tools = [
 ] as const;
 
 function AdminHomePage() {
-  const { isAdmin, loading } = useIsAdmin();
+  const { isAdmin, hasAccess, loading } = useMeetupAccess();
 
   if (loading) {
     return <p className="mx-auto max-w-3xl px-5 py-20 text-muted-foreground">Checking access…</p>;
   }
 
-  if (!isAdmin) {
+  if (!hasAccess) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-20">
         <h1 className="text-3xl">Page not found</h1>
@@ -54,11 +54,13 @@ function AdminHomePage() {
       <p className="font-display text-xs uppercase tracking-widest text-ember">Organiser tools</p>
       <h1 className="mt-3 font-display text-3xl tracking-tight">Admin</h1>
       <p className="mt-3 text-muted-foreground">
-        Everything organisers need to run Bay Area MoQ.
+        {isAdmin
+          ? "Everything organisers need to run Bay Area MoQ."
+          : "You manage specific events. Only those meetups appear in your tools."}
       </p>
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2">
-        {tools.map((tool) => (
+        {tools.filter((tool) => isAdmin || tool.to === "/admin/meetups").map((tool) => (
           <Link
             key={tool.to}
             to={tool.to}
