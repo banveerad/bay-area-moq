@@ -24,6 +24,7 @@ import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminMeetupsRouteImport } from './routes/_authenticated/admin/meetups'
 import { Route as AuthenticatedAdminMembersRouteImport } from './routes/_authenticated/admin/members'
+import { Route as ApiPublicCalendarMeetupIdDoticsRouteImport } from './routes/api/public/calendar.$meetupId[.]ics'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -104,6 +105,12 @@ const AuthenticatedAdminMembersRoute =
     path: '/admin/members',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicCalendarMeetupIdDoticsRoute =
+  ApiPublicCalendarMeetupIdDoticsRouteImport.update({
+    id: '/api/public/calendar/$meetupId.ics',
+    path: '/api/public/calendar/$meetupId.ics',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   id: '/lovable/email/auth/preview',
   path: '/lovable/email/auth/preview',
@@ -136,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/calendar/$meetupId.ics': typeof ApiPublicCalendarMeetupIdDoticsRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -155,6 +163,7 @@ export interface FileRoutesByTo {
   '/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/api/public/calendar/$meetupId.ics': typeof ApiPublicCalendarMeetupIdDoticsRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -176,6 +185,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
   '/_authenticated/admin/members': typeof AuthenticatedAdminMembersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/calendar/$meetupId.ics': typeof ApiPublicCalendarMeetupIdDoticsRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -197,6 +207,7 @@ export interface FileRouteTypes {
     | '/admin/meetups'
     | '/admin/members'
     | '/admin/'
+    | '/api/public/calendar/$meetupId.ics'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -216,6 +227,7 @@ export interface FileRouteTypes {
     | '/admin/meetups'
     | '/admin/members'
     | '/admin'
+    | '/api/public/calendar/$meetupId.ics'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -236,6 +248,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/meetups'
     | '/_authenticated/admin/members'
     | '/_authenticated/admin/'
+    | '/api/public/calendar/$meetupId.ics'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -253,6 +266,7 @@ export interface RootRouteChildren {
   ResourcesRoute: typeof ResourcesRoute
   TermsRoute: typeof TermsRoute
   WhatIsMoqRoute: typeof WhatIsMoqRoute
+  ApiPublicCalendarMeetupIdDoticsRoute: typeof ApiPublicCalendarMeetupIdDoticsRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
@@ -365,6 +379,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminMembersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/calendar/$meetupId.ics': {
+      id: '/api/public/calendar/$meetupId.ics'
+      path: '/api/public/calendar/$meetupId.ics'
+      fullPath: '/api/public/calendar/$meetupId.ics'
+      preLoaderRoute: typeof ApiPublicCalendarMeetupIdDoticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/auth/preview': {
       id: '/lovable/email/auth/preview'
       path: '/lovable/email/auth/preview'
@@ -418,6 +439,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResourcesRoute: ResourcesRoute,
   TermsRoute: TermsRoute,
   WhatIsMoqRoute: WhatIsMoqRoute,
+  ApiPublicCalendarMeetupIdDoticsRoute: ApiPublicCalendarMeetupIdDoticsRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,

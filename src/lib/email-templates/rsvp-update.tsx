@@ -24,6 +24,9 @@ interface Props {
   city?: string
   summary?: string
   changedByOrganiser?: boolean
+  googleUrl?: string
+  outlookUrl?: string
+  icsUrl?: string
 }
 
 const HEADLINES: Record<RsvpAction, string> = {
@@ -51,6 +54,9 @@ const Email = ({
   city,
   summary,
   changedByOrganiser,
+  googleUrl,
+  outlookUrl,
+  icsUrl,
 }: Props) => (
   <Html lang="en" dir="ltr">
     <Head />
@@ -75,6 +81,27 @@ const Email = ({
           )}
           {summary && <Text style={cardSummary}>{summary}</Text>}
         </Section>
+
+        {action === 'going' && (googleUrl || outlookUrl || icsUrl) && (
+          <Section style={calSection}>
+            <Text style={calLabel}>Add to your calendar</Text>
+            {googleUrl && (
+              <Link href={googleUrl} style={calButton}>
+                Google Calendar
+              </Link>
+            )}
+            {outlookUrl && (
+              <Link href={outlookUrl} style={calButton}>
+                Outlook
+              </Link>
+            )}
+            {icsUrl && (
+              <Link href={icsUrl} style={calButton}>
+                Apple / .ics
+              </Link>
+            )}
+          </Section>
+        )}
 
         {changedByOrganiser && action !== 'removed' && (
           <Text style={text}>This change was made by an organiser.</Text>
@@ -109,6 +136,9 @@ export const template = {
     venue: 'Cloudflare SF',
     city: 'San Francisco',
     summary: 'Two short talks, then open hacking on a shared public relay.',
+    googleUrl: 'https://calendar.google.com/calendar/render',
+    outlookUrl: 'https://outlook.live.com/calendar/0/deeplink/compose',
+    icsUrl: 'https://moqbayarea.com/api/public/calendar/example.ics',
   },
 } satisfies TemplateEntry
 
@@ -148,4 +178,22 @@ const cardTitle = {
 const cardMeta = { fontSize: '13px', color: '#55575d', margin: '0 0 4px' }
 const cardSummary = { fontSize: '13px', color: '#77797d', margin: '10px 0 0' }
 const link = { color: '#e85d3a', textDecoration: 'underline' }
+const calSection = { margin: '0 0 24px' }
+const calLabel = {
+  fontSize: '11px',
+  letterSpacing: '2px',
+  textTransform: 'uppercase' as const,
+  color: '#77797d',
+  margin: '0 0 12px',
+}
+const calButton = {
+  display: 'inline-block',
+  border: '1px solid #e85d3a',
+  color: '#e85d3a',
+  fontSize: '13px',
+  textDecoration: 'none',
+  padding: '9px 14px',
+  marginRight: '8px',
+  marginBottom: '8px',
+}
 const footer = { fontSize: '12px', color: '#999999', margin: '28px 0 0' }

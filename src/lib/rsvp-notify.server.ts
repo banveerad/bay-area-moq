@@ -1,5 +1,6 @@
 import { sendTemplateEmail } from '@/lib/email-templates/send-email'
 import { formatEventDate } from '@/lib/meetups'
+import { calendarLinks } from '@/lib/calendar'
 
 export type RsvpAction = 'going' | 'waitlist' | 'cancelled' | 'removed'
 
@@ -24,6 +25,8 @@ export async function notifyRsvpChange(input: NotifyRsvpChangeInput) {
   if (!meetup) return { sent: false as const }
 
   const dateLabel = formatEventDate(meetup.event_date)
+  const { google, outlook } = calendarLinks(meetup)
+  const icsUrl = `https://moqbayarea.com/api/public/calendar/${meetup.id}.ics`
 
   const { data: profile } = await supabaseAdmin
     .from('profiles')
@@ -53,6 +56,9 @@ export async function notifyRsvpChange(input: NotifyRsvpChangeInput) {
           city: meetup.city,
           summary: meetup.summary,
           changedByOrganiser: input.byOrganiser,
+          googleUrl: google,
+          outlookUrl: outlook,
+          icsUrl,
         },
       })
     } catch (error) {
