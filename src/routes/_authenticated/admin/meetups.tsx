@@ -252,6 +252,17 @@ function AdminMeetupsPage() {
               <option value="past">past</option>
             </select>
           </label>
+          <label className="text-sm">
+            <span className="text-muted-foreground">Capacity (blank = unlimited)</span>
+            <input
+              type="number"
+              min={1}
+              className={inputClass}
+              value={form.capacity}
+              onChange={(e) => setForm({ ...form, capacity: e.target.value })}
+            />
+          </label>
+
         </div>
         <div className="flex gap-3">
           <button
