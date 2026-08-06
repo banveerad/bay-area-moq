@@ -32,6 +32,7 @@ type FormState = {
   city: string;
   summary: string;
   status: string;
+  capacity: string;
 };
 
 const empty: FormState = {
@@ -42,28 +43,73 @@ const empty: FormState = {
   city: "",
   summary: "",
   status: "open",
+  capacity: "",
 };
 
 const inputClass =
   "w-full border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ember";
+
+type AttendeeRow = {
+  id: string;
+  meetup_id: string;
+  user_id: string;
+  status: string;
+  created_at: string;
+};
 
 function AdminMeetupsPage() {
   const { isAdmin, loading } = useIsAdmin();
   const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(empty);
+  const [openList, setOpenList] = useState<string | null>(null);
 
   const meetupsQuery = useQuery({
     queryKey: ["meetups"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("meetups")
-        .select("id, title, event_date, time_label, venue, city, summary, status, rsvp_count")
+        .select(
+          "id, title, event_date, time_label, venue, city, summary, status, rsvp_count, waitlist_count, capacity",
+        )
         .order("event_date", { ascending: true });
       if (error) throw error;
       return (data ?? []) as MeetupRow[];
     },
   });
+
+  const attendeesQuery = useQuery({
+    queryKey: ["admin-attendees"],
+    enabled: isAdmin,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("rsvps")
+        .select("id, meetup_id, user_id, status, created_at")
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as AttendeeRow[];
+    },
+  });
+
+  const profilesQuery = useQuery({
+    queryKey: ["admin-profiles"],
+    enabled: isAdmin,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("profiles").select("id, display_name, company");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const nameFor = (userId: string) => {
+    const p = (profilesQuery.data ?? []).find((x) => x.id === userId);
+    if (!p) return "Member";
+    return [p.display_name || "Member", p.company].filter(Boolean).join(" · ");
+  };
+
+  const attendeesFor = (meetupId: string, status: string) =>
+    (attendeesQuery.data ?? []).filter((a) => a.meetup_id === meetupId && a.status === status);
+
 
   const reset = () => {
     setEditingId(null);
