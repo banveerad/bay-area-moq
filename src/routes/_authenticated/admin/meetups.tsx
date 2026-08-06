@@ -119,6 +119,53 @@ function AdminMeetupsPage() {
     (attendeesQuery.data ?? []).filter((a) => a.meetup_id === meetupId && a.status === status);
 
 
+  const managersQuery = useQuery({
+    queryKey: ["meetup-managers"],
+    enabled: isAdmin,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("meetup_managers")
+        .select("id, meetup_id, user_id");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const managersFor = (meetupId: string) =>
+    (managersQuery.data ?? []).filter((m) => m.meetup_id === meetupId);
+
+  const addManager = useMutation({
+    mutationFn: async ({ meetupId, userId }: { meetupId: string; userId: string }) => {
+      if (!userId) throw new Error("Pick a member first.");
+      const { error } = await supabase
+        .from("meetup_managers")
+        .insert({ meetup_id: meetupId, user_id: userId });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["meetup-managers"] });
+      setManagerUserId("");
+      toast.success("Event manager added.");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const removeManager = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("meetup_managers").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["meetup-managers"] });
+      toast.success("Event manager removed.");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const visibleMeetups = (meetupsQuery.data ?? []).filter(
+    (m) => isAdmin || managedIds.includes(m.id),
+  );
+
   const reset = () => {
     setEditingId(null);
     setForm(empty);
@@ -253,14 +300,23 @@ function AdminMeetupsPage() {
         <div>
           <p className="eyebrow">Organiser tools</p>
           <h1 className="mt-4 text-4xl">Manage meetups</h1>
+          {!isAdmin && (
+            <p className="mt-3 text-sm text-muted-foreground">
+              You manage {managedIds.length === 1 ? "1 event" : `${managedIds.length} events`}. Only
+              those meetups are shown.
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap gap-3">
+        {isAdmin && (
         <Link
           to="/admin/members"
           className="border border-border px-5 py-3 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
         >
           Manage members
         </Link>
+        )}
+        {isAdmin && (
         <button
           type="button"
           onClick={startCreate}
@@ -268,6 +324,7 @@ function AdminMeetupsPage() {
         >
           + Add meetup
         </button>
+        )}
         </div>
       </div>
 
@@ -376,7 +433,7 @@ function AdminMeetupsPage() {
       )}
 
       <ul className="mt-12 divide-y divide-border border-y border-border">
-        {(meetupsQuery.data ?? []).map((m) => {
+        {visibleMeetups.map((m) => {
           const goingList = attendeesFor(m.id, "going");
           const waitList = attendeesFor(m.id, "waitlist");
           const expanded = openList === m.id;
@@ -427,6 +484,7 @@ function AdminMeetupsPage() {
                   >
                     ✎ Edit meetup
                   </button>
+                  {isAdmin && (
                   <button
                     type="button"
                     onClick={() => {
@@ -437,6 +495,7 @@ function AdminMeetupsPage() {
                   >
                     ✕ Delete meetup
                   </button>
+                  )}
                 </div>
               </div>
 
