@@ -59,7 +59,7 @@ function ContactPage() {
         meetup night, the chat is faster than email.
       </p>
 
-      <div className="mt-12 grid gap-10 md:grid-cols-[1fr_1.1fr]">
+      <div className="mt-12 grid items-start gap-10 md:grid-cols-[1fr_1.1fr]">
         <div className="space-y-px bg-border">
           {channels.map((c) => (
             <a
