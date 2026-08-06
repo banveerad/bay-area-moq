@@ -24,6 +24,7 @@ import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminMeetupsRouteImport } from './routes/_authenticated/admin/meetups'
 import { Route as AuthenticatedAdminMembersRouteImport } from './routes/_authenticated/admin/members'
+import { Route as AuthenticatedAdminResourcesRouteImport } from './routes/_authenticated/admin/resources'
 import { Route as ApiPublicCalendarMeetupIdDoticsRouteImport } from './routes/api/public/calendar.$meetupId[.]ics'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
@@ -105,6 +106,12 @@ const AuthenticatedAdminMembersRoute =
     path: '/admin/members',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminResourcesRoute =
+  AuthenticatedAdminResourcesRouteImport.update({
+    id: '/admin/resources',
+    path: '/admin/resources',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicCalendarMeetupIdDoticsRoute =
   ApiPublicCalendarMeetupIdDoticsRouteImport.update({
     id: '/api/public/calendar/$meetupId.ics',
@@ -142,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AuthenticatedAccountRoute
   '/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
+  '/admin/resources': typeof AuthenticatedAdminResourcesRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/calendar/$meetupId.ics': typeof ApiPublicCalendarMeetupIdDoticsRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -162,6 +170,7 @@ export interface FileRoutesByTo {
   '/account': typeof AuthenticatedAccountRoute
   '/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
+  '/admin/resources': typeof AuthenticatedAdminResourcesRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/calendar/$meetupId.ics': typeof ApiPublicCalendarMeetupIdDoticsRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -184,6 +193,7 @@ export interface FileRoutesById {
   '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
   '/_authenticated/admin/members': typeof AuthenticatedAdminMembersRoute
+  '/_authenticated/admin/resources': typeof AuthenticatedAdminResourcesRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/calendar/$meetupId.ics': typeof ApiPublicCalendarMeetupIdDoticsRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin/meetups'
     | '/admin/members'
+    | '/admin/resources'
     | '/admin/'
     | '/api/public/calendar/$meetupId.ics'
     | '/lovable/email/auth/preview'
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin/meetups'
     | '/admin/members'
+    | '/admin/resources'
     | '/admin'
     | '/api/public/calendar/$meetupId.ics'
     | '/lovable/email/auth/preview'
@@ -247,6 +259,7 @@ export interface FileRouteTypes {
     | '/_authenticated/account'
     | '/_authenticated/admin/meetups'
     | '/_authenticated/admin/members'
+    | '/_authenticated/admin/resources'
     | '/_authenticated/admin/'
     | '/api/public/calendar/$meetupId.ics'
     | '/lovable/email/auth/preview'
@@ -379,6 +392,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminMembersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/resources': {
+      id: '/_authenticated/admin/resources'
+      path: '/admin/resources'
+      fullPath: '/admin/resources'
+      preLoaderRoute: typeof AuthenticatedAdminResourcesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/calendar/$meetupId.ics': {
       id: '/api/public/calendar/$meetupId.ics'
       path: '/api/public/calendar/$meetupId.ics'
@@ -414,6 +434,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
   AuthenticatedAdminMeetupsRoute: typeof AuthenticatedAdminMeetupsRoute
   AuthenticatedAdminMembersRoute: typeof AuthenticatedAdminMembersRoute
+  AuthenticatedAdminResourcesRoute: typeof AuthenticatedAdminResourcesRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -421,6 +442,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountRoute: AuthenticatedAccountRoute,
   AuthenticatedAdminMeetupsRoute: AuthenticatedAdminMeetupsRoute,
   AuthenticatedAdminMembersRoute: AuthenticatedAdminMembersRoute,
+  AuthenticatedAdminResourcesRoute: AuthenticatedAdminResourcesRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
