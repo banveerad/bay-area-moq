@@ -85,11 +85,6 @@ export const resources = [
         href: "https://github.com/cloudflare/moq-rs",
         note: "Rust relay and CLI tools — the usual starting point.",
       },
-      {
-        label: "quic-go",
-        href: "https://github.com/quic-go/quic-go",
-        note: "Handy when you want to poke at the QUIC layer directly.",
-      },
     ],
   },
   {
