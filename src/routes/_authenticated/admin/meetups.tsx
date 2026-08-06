@@ -207,14 +207,7 @@ function AdminMeetupsPage() {
   if (!isAdmin) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-20">
-        <h1 className="text-3xl">Organisers only</h1>
-        <p className="mt-4 text-muted-foreground">
-          This page is for meetup organisers. If you should have access, ask an existing
-          organiser to add you.
-        </p>
-        <Link to="/meetups" className="mt-6 inline-block text-ember underline">
-          Back to meetups
-        </Link>
+        <h1 className="text-3xl">Page not found</h1>
       </div>
     );
   }
