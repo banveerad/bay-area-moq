@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import heroImage from "@/assets/hero-moq.jpg";
-import { meetups } from "@/data/community";
+import { supabase } from "@/integrations/supabase/client";
+import { formatEventDate, type MeetupRow } from "@/lib/meetups";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,7 +26,24 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const upcoming = meetups.filter((m) => m.status !== "past").slice(0, 2);
+  const meetupsQuery = useQuery({
+    queryKey: ["meetups"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("meetups")
+        .select(
+          "id, title, event_date, time_label, venue, city, summary, status, rsvp_count, waitlist_count, capacity",
+        )
+        .order("event_date", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as MeetupRow[];
+    },
+  });
+
+  const upcoming = (meetupsQuery.data ?? [])
+    .filter((m) => m.status !== "past")
+    .slice(0, 2);
+
 
   return (
     <div>
@@ -73,7 +93,7 @@ function Index() {
           {upcoming.map((m) => (
             <article key={m.id} className="border border-border bg-surface p-7">
               <p className="font-display text-xs tracking-widest text-ember uppercase">
-                {m.date} · {m.time}
+                {formatEventDate(m.event_date)} · {m.time_label}
               </p>
               <h3 className="mt-4 text-lg leading-snug">{m.title}</h3>
               <p className="mt-3 text-sm text-muted-foreground">{m.summary}</p>
