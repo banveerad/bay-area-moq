@@ -128,7 +128,9 @@ function MeetupsPage() {
 
       <ul className="mt-12 divide-y divide-border border-y border-border">
         {upcoming.map((m) => {
-          const going = isGoing(m.id);
+          const mine = myRsvp(m.id);
+          const going = Boolean(mine);
+          const full = m.capacity != null && m.rsvp_count >= m.capacity;
           return (
             <li key={m.id} className="grid gap-4 py-8 md:grid-cols-[210px_1fr_190px]">
               <div className="font-display text-sm">
@@ -148,6 +150,11 @@ function MeetupsPage() {
                     {statusLabel[m.status] ?? m.status}
                   </p>
                 )}
+                {full && m.status === "open" && (
+                  <p className="font-display text-xs tracking-widest uppercase text-muted-foreground">
+                    Full — waitlist
+                  </p>
+                )}
 
                 {isAuthenticated ? (
                   <>
@@ -161,12 +168,35 @@ function MeetupsPage() {
                           : "border-ember text-ember hover:bg-ember hover:text-background"
                       }`}
                     >
-                      {going ? "Cancel RSVP" : "RSVP"}
+                      {going
+                        ? mine?.status === "waitlist"
+                          ? "Leave waitlist"
+                          : "Cancel RSVP"
+                        : full
+                          ? "Join waitlist"
+                          : "RSVP"}
                     </button>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      {countFor(m.id)} going
+                      {m.rsvp_count}
+                      {m.capacity != null ? ` / ${m.capacity}` : ""} going
+                      {m.waitlist_count > 0 ? ` · ${m.waitlist_count} waitlisted` : ""}
                     </p>
+                    {mine?.status === "waitlist" && (
+                      <p className="mt-1 text-xs text-ember">You're on the waitlist</p>
+                    )}
                   </>
+                ) : (
+                  <Link
+                    to="/auth"
+                    className="mt-3 inline-block border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
+                  >
+                    {full ? "Sign in to join waitlist" : "Sign in to RSVP"}
+                  </Link>
+                )}
+              </div>
+            </li>
+          );
+
                 ) : (
                   <Link
                     to="/auth"
