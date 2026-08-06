@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import heroImage from "@/assets/hero-moq.jpg";
-import { meetups } from "@/data/community";
+import { supabase } from "@/integrations/supabase/client";
+import { formatEventDate, type MeetupRow } from "@/lib/meetups";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
