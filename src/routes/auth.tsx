@@ -75,6 +75,8 @@ function AuthPage() {
       return;
     }
     setBusy(true);
+    try {
+
 
       if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
