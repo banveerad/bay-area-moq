@@ -121,14 +121,21 @@ function AdminMeetupsPage() {
       if (!form.title || !form.event_date || !form.venue || !form.city) {
         throw new Error("Title, date, venue and city are required.");
       }
+      const trimmed = form.capacity.trim();
+      const capacity = trimmed === "" ? null : Number(trimmed);
+      if (capacity !== null && (!Number.isInteger(capacity) || capacity < 1)) {
+        throw new Error("Capacity must be a whole number of 1 or more, or left blank.");
+      }
+      const payload = { ...form, capacity };
       if (editingId) {
-        const { error } = await supabase.from("meetups").update(form).eq("id", editingId);
+        const { error } = await supabase.from("meetups").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("meetups").insert(form);
+        const { error } = await supabase.from("meetups").insert(payload);
         if (error) throw error;
       }
     },
+
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["meetups"] });
       toast.success(editingId ? "Meetup updated." : "Meetup added.");
