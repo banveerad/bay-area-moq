@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -50,8 +50,10 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
+
 
   const destination = safePath(search.redirect);
 
@@ -68,8 +70,14 @@ function AuthPage() {
       toast.error(parsed.error.issues[0]?.message ?? "Check your details");
       return;
     }
+    if (mode === "signup" && !acceptedTerms) {
+      toast.error("Please accept the terms and conditions to create an account");
+      return;
+    }
     setBusy(true);
     try {
+
+
       if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
           email: parsed.data.email,
@@ -205,9 +213,27 @@ function AuthPage() {
                 className="mt-2 w-full border border-border bg-surface px-3 py-2.5 text-sm outline-none focus:border-ember"
               />
             </label>
+            {mode === "signup" && (
+              <label className="flex items-start gap-3 text-sm text-muted-foreground">
+                <input
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="mt-0.5 size-4 shrink-0 accent-ember"
+                />
+                <span>
+                  I agree to the{" "}
+                  <Link to="/terms" className="text-ember hover:underline">
+                    terms and conditions
+                  </Link>{" "}
+                  and the community code of conduct.
+                </span>
+              </label>
+            )}
             <button
               type="submit"
-              disabled={busy}
+              disabled={busy || (mode === "signup" && !acceptedTerms)}
+
               className="w-full bg-ember px-4 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {mode === "signin" ? "Sign in" : "Create account"}
