@@ -219,9 +219,21 @@ function AdminMeetupsPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-20">
-      <p className="eyebrow">Organiser tools</p>
-      <h1 className="mt-4 text-4xl">Manage meetups</h1>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="eyebrow">Organiser tools</p>
+          <h1 className="mt-4 text-4xl">Manage meetups</h1>
+        </div>
+        <button
+          type="button"
+          onClick={startCreate}
+          className="bg-ember px-5 py-3 font-display text-xs tracking-widest uppercase text-background transition-opacity hover:opacity-90"
+        >
+          + Add meetup
+        </button>
+      </div>
 
+      {formOpen && (
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -230,6 +242,7 @@ function AdminMeetupsPage() {
         className="mt-10 space-y-4 border border-border bg-surface p-7"
       >
         <h2 className="text-lg">{editingId ? "Edit meetup" : "New meetup"}</h2>
+
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="text-sm sm:col-span-2">
             <span className="text-muted-foreground">Title</span>
