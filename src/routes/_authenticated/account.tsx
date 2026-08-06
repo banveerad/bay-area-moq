@@ -6,6 +6,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { formatEventDate } from "@/lib/meetups";
+import { AddToCalendar } from "@/components/add-to-calendar";
 
 
 export const Route = createFileRoute("/_authenticated/account")({
