@@ -18,6 +18,7 @@ import { Route as JoinRouteImport } from './routes/join'
 import { Route as MeetupsRouteImport } from './routes/meetups'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WhatIsMoqRouteImport } from './routes/what-is-moq'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 
@@ -65,6 +66,11 @@ const ResourcesRoute = ResourcesRouteImport.update({
   path: '/resources',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WhatIsMoqRoute = WhatIsMoqRouteImport.update({
   id: '/what-is-moq',
   path: '/what-is-moq',
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/meetups': typeof MeetupsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
+  '/terms': typeof TermsRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/account': typeof AuthenticatedAccountRoute
 }
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/meetups': typeof MeetupsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
+  '/terms': typeof TermsRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/account': typeof AuthenticatedAccountRoute
 }
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/meetups': typeof MeetupsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
+  '/terms': typeof TermsRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
 }
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/meetups'
     | '/reset-password'
     | '/resources'
+    | '/terms'
     | '/what-is-moq'
     | '/account'
   fileRoutesByTo: FileRoutesByTo
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/meetups'
     | '/reset-password'
     | '/resources'
+    | '/terms'
     | '/what-is-moq'
     | '/account'
   id:
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/meetups'
     | '/reset-password'
     | '/resources'
+    | '/terms'
     | '/what-is-moq'
     | '/_authenticated/account'
   fileRoutesById: FileRoutesById
@@ -164,6 +176,7 @@ export interface RootRouteChildren {
   MeetupsRoute: typeof MeetupsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResourcesRoute: typeof ResourcesRoute
+  TermsRoute: typeof TermsRoute
   WhatIsMoqRoute: typeof WhatIsMoqRoute
 }
 
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResourcesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/what-is-moq': {
       id: '/what-is-moq'
       path: '/what-is-moq'
@@ -270,8 +290,19 @@ const rootRouteChildren: RootRouteChildren = {
   MeetupsRoute: MeetupsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ResourcesRoute: ResourcesRoute,
+  TermsRoute: TermsRoute,
   WhatIsMoqRoute: WhatIsMoqRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
