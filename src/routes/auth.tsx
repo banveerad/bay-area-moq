@@ -155,14 +155,24 @@ function AuthPage() {
         </div>
       ) : (
         <>
+          <p className="mt-8 border border-border bg-surface px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+            By {mode === "signin" ? "signing in" : "signing up"} — including with Google — you agree
+            to our{" "}
+            <Link to="/terms" className="text-ember hover:underline">
+              terms and conditions
+            </Link>
+            .
+          </p>
+
           <button
             type="button"
             onClick={handleGoogle}
             disabled={busy}
-            className="mt-10 w-full border border-border bg-surface px-4 py-3 text-sm transition-colors hover:bg-surface-raised disabled:opacity-50"
+            className="mt-6 w-full border border-border bg-surface px-4 py-3 text-sm transition-colors hover:bg-surface-raised disabled:opacity-50"
           >
             Continue with Google
           </button>
+
 
           <div className="my-6 flex items-center gap-4 text-xs text-muted-foreground">
             <span className="h-px flex-1 bg-border" />
@@ -237,16 +247,8 @@ function AuthPage() {
             >
               {mode === "signin" ? "Sign in" : "Create account"}
             </button>
-            {mode === "signin" && (
-              <p className="text-xs leading-relaxed text-muted-foreground">
-                By signing in you agree to our{" "}
-                <Link to="/terms" className="text-ember hover:underline">
-                  terms and conditions
-                </Link>
-                .
-              </p>
-            )}
           </form>
+
 
 
           <div className="mt-6 flex flex-wrap justify-between gap-3 text-sm text-muted-foreground">
