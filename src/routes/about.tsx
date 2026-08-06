@@ -24,50 +24,21 @@ export const Route = createFileRoute("/about")({
 });
 
 const goals = [
-  [
-    "Build the community",
-    "Put the people working on Media Over QUIC in the same room on a regular cadence: engineers, researchers, product folks and newcomers alike.",
-  ],
-  [
-    "Share what we know",
-    "Deep dives on transport, packaging, latency and codecs. Bring the trace, the graph, the ugly workaround. The useful details live there.",
-  ],
-  [
-    "Show what you are building",
-    "Demos over decks. Prototypes, side projects and half-finished experiments are all fair game, working or not.",
-  ],
-  [
-    "Talk about the market",
-    "Where MoQ actually wins, who is adopting it, what it displaces, and which use cases are still waiting for someone to build them.",
-  ],
-  [
-    "Name the hard problems",
-    "Interop gaps, missing tooling, spec ambiguities, operational pain. We write them down instead of rediscovering them.",
-  ],
-  [
-    "Find the solutions",
-    "Turn those problems into experiments, patches, docs and follow-up sessions, and report back at the next meetup.",
-  ],
+  ["Build the community", "Get the people working on MoQ in the same room on a regular cadence."],
+  ["Share what we know", "Deep dives on transport, packaging, latency and codecs, with the real details."],
+  ["Show what you are building", "Demos over decks. Prototypes and half-finished experiments welcome."],
+  ["Talk about the market", "Where MoQ wins, who is adopting it, and what nobody has built yet."],
+  ["Name the hard problems", "Interop gaps, missing tooling, spec ambiguities, operational pain."],
+  ["Find the solutions", "Turn those into experiments and patches, then report back next meetup."],
 ];
 
 const principles = [
-  [
-    "Working code beats slideware",
-    "Every meetup has something running on screen, even when it fails live. Especially then.",
-  ],
-  [
-    "No vendor pitches",
-    "Talk about what you built and how it broke. Product decks go somewhere else.",
-  ],
-  [
-    "Beginners are the point",
-    "Half the room has never opened a QUIC trace. Explain the acronym the first time you use it.",
-  ],
-  [
-    "Everything gets shared",
-    "Slides, repos and notes go out to the list after each night so people who missed it can catch up.",
-  ],
+  ["Working code beats slideware", "Something runs on screen every night, even when it fails live."],
+  ["No vendor pitches", "Talk about what you built and how it broke."],
+  ["Beginners are the point", "Explain the acronym the first time you use it."],
+  ["Everything gets shared", "Slides, repos and notes go out after each night."],
 ];
+
 
 function AboutPage() {
   return (
@@ -97,28 +68,19 @@ function AboutPage() {
         </div>
       </div>
 
-      <div className="mt-8 space-y-6 text-muted-foreground">
+      <div className="mt-8 space-y-4 text-muted-foreground">
         <p>
-          MoQ Bay Area started the way these things usually do: a hallway conversation
-          after a conference talk, a group chat, and then someone offering a room with a
-          projector. We are streaming engineers, transport nerds, codec people and a
-          steady stream of curious newcomers who want to understand where live video is
-          heading before it arrives.
+          We are streaming engineers, transport nerds, codec people and curious newcomers
+          building a real community around Media Over QUIC: sharing knowledge, showing what
+          people are building, arguing about the market, and chasing the unsolved problems.
         </p>
         <p>
-          The goal is simple: build a real community around Media Over QUIC. That means
-          sharing knowledge, showing what people are actually building, arguing about the
-          market opportunity, and naming the problems nobody has solved yet, then
-          chasing them down together. Not a users&apos; group for one product, not a
-          standards committee. Just a good tech group.
-        </p>
-        <p>
-          It is volunteer-run and free. Venues are donated by companies in the Bay who
-          care about the protocol; food is whatever the host can swing. Nobody is paid,
-          nothing is sponsored content, and the organisers rotate so it does not collapse
-          when one person gets busy.
+          Volunteer-run and free. Venues are donated by Bay Area companies that care about
+          the protocol. Not a users&apos; group, not a standards committee. Just a good tech
+          group.
         </p>
       </div>
+
 
 
       <h2 className="mt-14 text-2xl">What we are here to do</h2>
