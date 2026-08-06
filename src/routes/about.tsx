@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import organiserPhoto from "@/assets/banashankar-veerad.png.asset.json";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -109,6 +110,27 @@ function AboutPage() {
         ))}
       </div>
 
+      <h2 className="mt-14 text-2xl">Run by</h2>
+      <div className="mt-6 flex items-center gap-5 bg-surface p-6">
+        <img
+          src={organiserPhoto.url}
+          alt="Banashankar Veerad, organiser of MoQ Bay Area"
+          loading="lazy"
+          className="h-20 w-20 shrink-0 rounded-full object-cover"
+        />
+        <div>
+          <h3 className="font-display text-sm">Banashankar Veerad</h3>
+          <a
+            href="https://www.linkedin.com/in/banashankar-veerad-b5892923/"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="mt-1 inline-block text-sm text-ember hover:underline"
+          >
+            LinkedIn
+          </a>
+        </div>
+      </div>
+
       <h2 className="mt-14 text-2xl">House rules</h2>
       <div className="mt-6 grid gap-px bg-border sm:grid-cols-2">
         {principles.map(([title, body]) => (
@@ -118,6 +140,7 @@ function AboutPage() {
           </div>
         ))}
       </div>
+
 
       <p className="mt-14 border-l-2 border-ember bg-surface p-6 text-sm text-muted-foreground">
         Want to host, speak, demo something, or just find out when the next one is?{" "}
