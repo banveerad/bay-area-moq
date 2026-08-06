@@ -24,50 +24,21 @@ export const Route = createFileRoute("/about")({
 });
 
 const goals = [
-  [
-    "Build the community",
-    "Put the people working on Media Over QUIC in the same room on a regular cadence: engineers, researchers, product folks and newcomers alike.",
-  ],
-  [
-    "Share what we know",
-    "Deep dives on transport, packaging, latency and codecs. Bring the trace, the graph, the ugly workaround. The useful details live there.",
-  ],
-  [
-    "Show what you are building",
-    "Demos over decks. Prototypes, side projects and half-finished experiments are all fair game, working or not.",
-  ],
-  [
-    "Talk about the market",
-    "Where MoQ actually wins, who is adopting it, what it displaces, and which use cases are still waiting for someone to build them.",
-  ],
-  [
-    "Name the hard problems",
-    "Interop gaps, missing tooling, spec ambiguities, operational pain. We write them down instead of rediscovering them.",
-  ],
-  [
-    "Find the solutions",
-    "Turn those problems into experiments, patches, docs and follow-up sessions, and report back at the next meetup.",
-  ],
+  ["Build the community", "Get the people working on MoQ in the same room on a regular cadence."],
+  ["Share what we know", "Deep dives on transport, packaging, latency and codecs, with the real details."],
+  ["Show what you are building", "Demos over decks. Prototypes and half-finished experiments welcome."],
+  ["Talk about the market", "Where MoQ wins, who is adopting it, and what nobody has built yet."],
+  ["Name the hard problems", "Interop gaps, missing tooling, spec ambiguities, operational pain."],
+  ["Find the solutions", "Turn those into experiments and patches, then report back next meetup."],
 ];
 
 const principles = [
-  [
-    "Working code beats slideware",
-    "Every meetup has something running on screen, even when it fails live. Especially then.",
-  ],
-  [
-    "No vendor pitches",
-    "Talk about what you built and how it broke. Product decks go somewhere else.",
-  ],
-  [
-    "Beginners are the point",
-    "Half the room has never opened a QUIC trace. Explain the acronym the first time you use it.",
-  ],
-  [
-    "Everything gets shared",
-    "Slides, repos and notes go out to the list after each night so people who missed it can catch up.",
-  ],
+  ["Working code beats slideware", "Something runs on screen every night, even when it fails live."],
+  ["No vendor pitches", "Talk about what you built and how it broke."],
+  ["Beginners are the point", "Explain the acronym the first time you use it."],
+  ["Everything gets shared", "Slides, repos and notes go out after each night."],
 ];
+
 
 function AboutPage() {
   return (
