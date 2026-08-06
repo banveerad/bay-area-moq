@@ -100,16 +100,6 @@ function AboutPage() {
         </p>
       </div>
 
-      <h2 className="mt-14 text-2xl">What we are here to do</h2>
-      <div className="mt-6 grid gap-px bg-border sm:grid-cols-2">
-        {goals.map(([title, body]) => (
-          <div key={title} className="bg-surface p-6">
-            <h3 className="font-display text-sm">{title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{body}</p>
-          </div>
-        ))}
-      </div>
-
       <h2 className="mt-14 text-2xl">Run by</h2>
       <div className="mt-6 flex items-center gap-5 bg-surface p-6">
         <img
@@ -130,6 +120,17 @@ function AboutPage() {
           </a>
         </div>
       </div>
+
+      <h2 className="mt-14 text-2xl">What we are here to do</h2>
+      <div className="mt-6 grid gap-px bg-border sm:grid-cols-2">
+        {goals.map(([title, body]) => (
+          <div key={title} className="bg-surface p-6">
+            <h3 className="font-display text-sm">{title}</h3>
+            <p className="mt-2 text-sm text-muted-foreground">{body}</p>
+          </div>
+        ))}
+      </div>
+
 
       <h2 className="mt-14 text-2xl">House rules</h2>
       <div className="mt-6 grid gap-px bg-border sm:grid-cols-2">
