@@ -21,6 +21,7 @@ import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WhatIsMoqRouteImport } from './routes/what-is-moq'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
+import { Route as AuthenticatedAdminMeetupsRouteImport } from './routes/_authenticated/admin/meetups'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -81,6 +82,12 @@ const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminMeetupsRoute =
+  AuthenticatedAdminMeetupsRouteImport.update({
+    id: '/admin/meetups',
+    path: '/admin/meetups',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/account': typeof AuthenticatedAccountRoute
+  '/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -107,6 +115,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/account': typeof AuthenticatedAccountRoute
+  '/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -122,6 +131,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
+  '/_authenticated/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/what-is-moq'
     | '/account'
+    | '/admin/meetups'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/what-is-moq'
     | '/account'
+    | '/admin/meetups'
   id:
     | '__root__'
     | '/'
@@ -164,6 +176,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/what-is-moq'
     | '/_authenticated/account'
+    | '/_authenticated/admin/meetups'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -266,15 +279,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/meetups': {
+      id: '/_authenticated/admin/meetups'
+      path: '/admin/meetups'
+      fullPath: '/admin/meetups'
+      preLoaderRoute: typeof AuthenticatedAdminMeetupsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
+  AuthenticatedAdminMeetupsRoute: typeof AuthenticatedAdminMeetupsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountRoute: AuthenticatedAccountRoute,
+  AuthenticatedAdminMeetupsRoute: AuthenticatedAdminMeetupsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
