@@ -134,9 +134,24 @@ function AdminMeetupsPage() {
   };
 
   const setRsvpStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: "going" | "waitlist" }) => {
+    mutationFn: async ({
+      id,
+      status,
+      meetupId,
+      userId,
+    }: {
+      id: string;
+      status: "going" | "waitlist";
+      meetupId: string;
+      userId: string;
+    }) => {
       const { error } = await supabase.from("rsvps").update({ status }).eq("id", id);
       if (error) throw error;
+      try {
+        await notify({ data: { meetupId, targetUserId: userId, action: status } });
+      } catch (err) {
+        console.error(err);
+      }
       return status;
     },
     onSuccess: (status) => {
@@ -147,9 +162,22 @@ function AdminMeetupsPage() {
   });
 
   const removeRsvp = useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async ({
+      id,
+      meetupId,
+      userId,
+    }: {
+      id: string;
+      meetupId: string;
+      userId: string;
+    }) => {
       const { error } = await supabase.from("rsvps").delete().eq("id", id);
       if (error) throw error;
+      try {
+        await notify({ data: { meetupId, targetUserId: userId, action: "removed" } });
+      } catch (err) {
+        console.error(err);
+      }
     },
     onSuccess: () => {
       refreshAll();
