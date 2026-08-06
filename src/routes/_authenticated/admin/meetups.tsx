@@ -7,6 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useMeetupAccess } from "@/hooks/use-meetup-access";
 import { formatEventDate, type MeetupRow } from "@/lib/meetups";
 import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
+import { announceMeetup } from "@/lib/meetup-announce.functions";
+
 import { MemberProfileDialog } from "@/components/member-profile-dialog";
 
 export const Route = createFileRoute("/_authenticated/admin/meetups")({
@@ -78,8 +80,9 @@ function AdminMeetupsPage() {
       const { data, error } = await supabase
         .from("meetups")
         .select(
-          "id, title, event_date, time_label, venue, city, summary, status, rsvp_count, waitlist_count, capacity",
+          "id, title, event_date, time_label, venue, city, summary, status, rsvp_count, waitlist_count, capacity, announced_at",
         )
+
         .order("event_date", { ascending: true });
       if (error) throw error;
       return (data ?? []) as MeetupRow[];
