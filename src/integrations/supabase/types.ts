@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       meetups: {
         Row: {
+          capacity: number | null
           city: string
           created_at: string
           event_date: string
@@ -27,8 +28,10 @@ export type Database = {
           title: string
           updated_at: string
           venue: string
+          waitlist_count: number
         }
         Insert: {
+          capacity?: number | null
           city: string
           created_at?: string
           event_date: string
@@ -40,8 +43,10 @@ export type Database = {
           title: string
           updated_at?: string
           venue: string
+          waitlist_count?: number
         }
         Update: {
+          capacity?: number | null
           city?: string
           created_at?: string
           event_date?: string
@@ -53,6 +58,7 @@ export type Database = {
           title?: string
           updated_at?: string
           venue?: string
+          waitlist_count?: number
         }
         Relationships: []
       }
@@ -88,18 +94,21 @@ export type Database = {
           created_at: string
           id: string
           meetup_id: string
+          status: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
           meetup_id: string
+          status?: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
           meetup_id?: string
+          status?: string
           user_id?: string
         }
         Relationships: [
