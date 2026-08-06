@@ -100,11 +100,7 @@ export const resources = [
   {
     group: "Talks & background",
     items: [
-      {
-        label: "Demuxed talk archive",
-        href: "https://www.youtube.com/@demuxed",
-        note: "Video engineering talks, several on MoQ and low latency.",
-      },
+
       {
         label: "QUIC, explained (RFC 9000)",
         href: "https://www.rfc-editor.org/rfc/rfc9000.html",
