@@ -128,13 +128,12 @@ function MeetupsPage() {
                 </p>
               </div>
               <div className="md:text-right">
-                <p className="font-display text-xs tracking-widest uppercase">
-                  <span
-                    className={m.status === "open" ? "text-ember" : "text-muted-foreground"}
-                  >
+                {m.status !== "open" && (
+                  <p className="font-display text-xs tracking-widest uppercase text-muted-foreground">
                     {statusLabel[m.status] ?? m.status}
-                  </span>
-                </p>
+                  </p>
+                )}
+
                 {isAuthenticated ? (
                   <>
                     <button
