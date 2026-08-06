@@ -26,7 +26,24 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const upcoming = meetups.filter((m) => m.status !== "past").slice(0, 2);
+  const meetupsQuery = useQuery({
+    queryKey: ["meetups"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("meetups")
+        .select(
+          "id, title, event_date, time_label, venue, city, summary, status, rsvp_count, waitlist_count, capacity",
+        )
+        .order("event_date", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as MeetupRow[];
+    },
+  });
+
+  const upcoming = (meetupsQuery.data ?? [])
+    .filter((m) => m.status !== "past")
+    .slice(0, 2);
+
 
   return (
     <div>
