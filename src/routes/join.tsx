@@ -25,7 +25,7 @@ const ways = [
     title: "Chat",
     body: "Day-to-day questions, relay outages, and someone always debugging certificates.",
     action: "Open the Discord",
-    href: "https://discord.gg/",
+    href: "https://discord.gg/yuW3HM8w",
   },
   {
     title: "Announcements",
