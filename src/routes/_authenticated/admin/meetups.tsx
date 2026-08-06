@@ -63,6 +63,8 @@ function AdminMeetupsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(empty);
   const [openList, setOpenList] = useState<string | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
+
 
   const meetupsQuery = useQuery({
     queryKey: ["meetups"],
@@ -114,7 +116,46 @@ function AdminMeetupsPage() {
   const reset = () => {
     setEditingId(null);
     setForm(empty);
+    setFormOpen(false);
   };
+
+  const startCreate = () => {
+    setEditingId(null);
+    setForm(empty);
+    setFormOpen(true);
+  };
+
+  const refreshAll = () => {
+    void queryClient.invalidateQueries({ queryKey: ["meetups"] });
+    void queryClient.invalidateQueries({ queryKey: ["admin-attendees"] });
+    void queryClient.invalidateQueries({ queryKey: ["rsvps"] });
+  };
+
+  const setRsvpStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: "going" | "waitlist" }) => {
+      const { error } = await supabase.from("rsvps").update({ status }).eq("id", id);
+      if (error) throw error;
+      return status;
+    },
+    onSuccess: (status) => {
+      refreshAll();
+      toast.success(status === "going" ? "Moved to going." : "Moved to waitlist.");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const removeRsvp = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("rsvps").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      refreshAll();
+      toast.success("RSVP removed.");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
 
   const save = useMutation({
     mutationFn: async () => {
@@ -178,9 +219,21 @@ function AdminMeetupsPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-20">
-      <p className="eyebrow">Organiser tools</p>
-      <h1 className="mt-4 text-4xl">Manage meetups</h1>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="eyebrow">Organiser tools</p>
+          <h1 className="mt-4 text-4xl">Manage meetups</h1>
+        </div>
+        <button
+          type="button"
+          onClick={startCreate}
+          className="bg-ember px-5 py-3 font-display text-xs tracking-widest uppercase text-background transition-opacity hover:opacity-90"
+        >
+          + Add meetup
+        </button>
+      </div>
 
+      {formOpen && (
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -189,6 +242,7 @@ function AdminMeetupsPage() {
         className="mt-10 space-y-4 border border-border bg-surface p-7"
       >
         <h2 className="text-lg">{editingId ? "Edit meetup" : "New meetup"}</h2>
+
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="text-sm sm:col-span-2">
             <span className="text-muted-foreground">Title</span>
@@ -272,23 +326,23 @@ function AdminMeetupsPage() {
           >
             {editingId ? "Save changes" : "Add meetup"}
           </button>
-          {editingId && (
-            <button
-              type="button"
-              onClick={reset}
-              className="border border-border px-5 py-3 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
-            >
-              Cancel
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={reset}
+            className="border border-border px-5 py-3 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
+          >
+            Cancel
+          </button>
         </div>
       </form>
+      )}
 
       <ul className="mt-12 divide-y divide-border border-y border-border">
         {(meetupsQuery.data ?? []).map((m) => {
           const goingList = attendeesFor(m.id, "going");
           const waitList = attendeesFor(m.id, "waitlist");
           const expanded = openList === m.id;
+          const full = m.capacity != null && goingList.length >= m.capacity;
           return (
             <li key={m.id} className="py-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -318,6 +372,7 @@ function AdminMeetupsPage() {
                     type="button"
                     onClick={() => {
                       setEditingId(m.id);
+                      setFormOpen(true);
                       setForm({
                         title: m.title,
                         event_date: m.event_date,
@@ -328,19 +383,21 @@ function AdminMeetupsPage() {
                         status: m.status,
                         capacity: m.capacity != null ? String(m.capacity) : "",
                       });
+                      window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
+                    className="border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
                   >
-                    Edit
+                    ✎ Edit meetup
                   </button>
                   <button
                     type="button"
                     onClick={() => {
-                      if (confirm(`Delete "${m.title}"?`)) remove.mutate(m.id);
+                      if (confirm(`Delete "${m.title}"? This also removes all its RSVPs.`))
+                        remove.mutate(m.id);
                     }}
-                    className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:border-ember hover:text-ember"
+                    className="border border-destructive px-4 py-2 font-display text-xs tracking-widest uppercase text-destructive transition-colors hover:bg-destructive hover:text-background"
                   >
-                    Delete
+                    ✕ Delete meetup
                   </button>
                 </div>
               </div>
@@ -349,27 +406,86 @@ function AdminMeetupsPage() {
                 <div className="mt-5 grid gap-6 border border-border bg-surface p-5 sm:grid-cols-2">
                   <div>
                     <p className="font-display text-xs tracking-widest uppercase text-ember">
-                      Going ({goingList.length})
+                      Going ({goingList.length}
+                      {m.capacity != null ? ` / ${m.capacity}` : ""})
                     </p>
-                    <ol className="mt-3 space-y-1 text-sm text-muted-foreground">
-                      {goingList.length === 0 && <li>Nobody yet.</li>}
+                    <ul className="mt-3 space-y-2 text-sm">
+                      {goingList.length === 0 && (
+                        <li className="text-muted-foreground">Nobody yet.</li>
+                      )}
                       {goingList.map((a) => (
-                        <li key={a.id}>{nameFor(a.user_id)}</li>
+                        <li key={a.id} className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-muted-foreground">{nameFor(a.user_id)}</span>
+                          <span className="flex gap-2">
+                            <button
+                              type="button"
+                              disabled={setRsvpStatus.isPending}
+                              onClick={() => setRsvpStatus.mutate({ id: a.id, status: "waitlist" })}
+                              className="border border-border px-2 py-1 text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground disabled:opacity-50"
+                            >
+                              → Waitlist
+                            </button>
+                            <button
+                              type="button"
+                              disabled={removeRsvp.isPending}
+                              onClick={() => {
+                                if (confirm(`Remove ${nameFor(a.user_id)}'s RSVP?`))
+                                  removeRsvp.mutate(a.id);
+                              }}
+                              className="border border-destructive px-2 py-1 text-xs uppercase tracking-wider text-destructive hover:bg-destructive hover:text-background disabled:opacity-50"
+                            >
+                              Remove
+                            </button>
+                          </span>
+                        </li>
                       ))}
-                    </ol>
+                    </ul>
                   </div>
                   <div>
                     <p className="font-display text-xs tracking-widest uppercase text-muted-foreground">
                       Waitlist ({waitList.length})
                     </p>
-                    <ol className="mt-3 space-y-1 text-sm text-muted-foreground">
-                      {waitList.length === 0 && <li>Nobody waiting.</li>}
+                    <ul className="mt-3 space-y-2 text-sm">
+                      {waitList.length === 0 && (
+                        <li className="text-muted-foreground">Nobody waiting.</li>
+                      )}
                       {waitList.map((a, i) => (
-                        <li key={a.id}>
-                          {i + 1}. {nameFor(a.user_id)}
+                        <li key={a.id} className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-muted-foreground">
+                            {i + 1}. {nameFor(a.user_id)}
+                          </span>
+                          <span className="flex gap-2">
+                            <button
+                              type="button"
+                              disabled={setRsvpStatus.isPending}
+                              title={full ? "Meetup is at capacity — raise capacity first" : undefined}
+                              onClick={() => {
+                                if (
+                                  full &&
+                                  !confirm("This meetup is at capacity. Move them to going anyway?")
+                                )
+                                  return;
+                                setRsvpStatus.mutate({ id: a.id, status: "going" });
+                              }}
+                              className="border border-ember px-2 py-1 text-xs uppercase tracking-wider text-ember hover:bg-ember hover:text-background disabled:opacity-50"
+                            >
+                              → Going
+                            </button>
+                            <button
+                              type="button"
+                              disabled={removeRsvp.isPending}
+                              onClick={() => {
+                                if (confirm(`Remove ${nameFor(a.user_id)} from the waitlist?`))
+                                  removeRsvp.mutate(a.id);
+                              }}
+                              className="border border-destructive px-2 py-1 text-xs uppercase tracking-wider text-destructive hover:bg-destructive hover:text-background disabled:opacity-50"
+                            >
+                              Remove
+                            </button>
+                          </span>
                         </li>
                       ))}
-                    </ol>
+                    </ul>
                   </div>
                 </div>
               )}
@@ -377,7 +493,7 @@ function AdminMeetupsPage() {
           );
         })}
       </ul>
-
     </div>
   );
 }
+
