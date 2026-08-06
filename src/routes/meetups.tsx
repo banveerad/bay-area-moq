@@ -144,7 +144,26 @@ function MeetupsPage() {
         <p className="mt-12 text-sm text-muted-foreground">Loading the calendar…</p>
       )}
 
+      {!meetupsQuery.isLoading && upcoming.length === 0 && (
+        <div className="mt-12 border border-border bg-surface p-8">
+          <p className="font-display text-xs tracking-widest text-ember uppercase">
+            Nothing on the calendar
+          </p>
+          <p className="mt-3 text-sm text-muted-foreground">
+            New meetups are coming soon. Join the community and we'll let you know the
+            moment the next date is locked in.
+          </p>
+          <Link
+            to="/join"
+            className="mt-6 inline-block border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
+          >
+            Join the community
+          </Link>
+        </div>
+      )}
+
       <ul className="mt-12 divide-y divide-border border-y border-border">
+
         {upcoming.map((m) => {
           const mine = myRsvp(m.id);
           const going = Boolean(mine);

@@ -162,7 +162,19 @@ function Index() {
             All meetups
           </Link>
         </div>
+        {!meetupsQuery.isLoading && upcoming.length === 0 && (
+          <div className="mt-8 border border-border bg-surface p-7">
+            <p className="font-display text-xs tracking-widest text-ember uppercase">
+              Nothing on the calendar
+            </p>
+            <p className="mt-3 text-sm text-muted-foreground">
+              New meetups are coming soon — join the community and you'll hear about the
+              next one first.
+            </p>
+          </div>
+        )}
         <div className="mt-8 grid gap-6 md:grid-cols-2">
+
           {upcoming.map((m) => {
             const mine = myRsvp(m.id);
             const going = Boolean(mine);
