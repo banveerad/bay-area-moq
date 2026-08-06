@@ -132,9 +132,9 @@ function Index() {
         <div className="relative mx-auto max-w-6xl px-5 py-28 sm:py-36">
           <p className="eyebrow">San Francisco Bay Area</p>
           <h1 className="mt-5 max-w-3xl text-4xl leading-[1.05] sm:text-6xl">
-            Media Over QUIC,
+            Community for
             <br />
-            <span className="text-ember">in a room together.</span>
+            <span className="text-ember">Media Over QUIC.</span>
           </h1>
           <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
             A community of streaming engineers, protocol nerds and codec people figuring
