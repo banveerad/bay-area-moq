@@ -462,7 +462,7 @@ function AdminMeetupsPage() {
                             <button
                               type="button"
                               disabled={setRsvpStatus.isPending}
-                              onClick={() => setRsvpStatus.mutate({ id: a.id, status: "waitlist" })}
+                              onClick={() => setRsvpStatus.mutate({ id: a.id, status: "waitlist", meetupId: m.id, userId: a.user_id })}
                               className="border border-border px-2 py-1 text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground disabled:opacity-50"
                             >
                               → Waitlist
@@ -472,7 +472,7 @@ function AdminMeetupsPage() {
                               disabled={removeRsvp.isPending}
                               onClick={() => {
                                 if (confirm(`Remove ${nameFor(a.user_id)}'s RSVP?`))
-                                  removeRsvp.mutate(a.id);
+                                  removeRsvp.mutate({ id: a.id, meetupId: m.id, userId: a.user_id });
                               }}
                               className="border border-destructive px-2 py-1 text-xs uppercase tracking-wider text-destructive hover:bg-destructive hover:text-background disabled:opacity-50"
                             >
@@ -504,7 +504,7 @@ function AdminMeetupsPage() {
                             <button
                               type="button"
                               disabled={setRsvpStatus.isPending}
-                              onClick={() => setRsvpStatus.mutate({ id: a.id, status: "going" })}
+                              onClick={() => setRsvpStatus.mutate({ id: a.id, status: "going", meetupId: m.id, userId: a.user_id })}
 
                               className="border border-ember px-2 py-1 text-xs uppercase tracking-wider text-ember hover:bg-ember hover:text-background disabled:opacity-50"
                             >
@@ -515,7 +515,7 @@ function AdminMeetupsPage() {
                               disabled={removeRsvp.isPending}
                               onClick={() => {
                                 if (confirm(`Remove ${nameFor(a.user_id)} from the waitlist?`))
-                                  removeRsvp.mutate(a.id);
+                                  removeRsvp.mutate({ id: a.id, meetupId: m.id, userId: a.user_id });
                               }}
                               className="border border-destructive px-2 py-1 text-xs uppercase tracking-wider text-destructive hover:bg-destructive hover:text-background disabled:opacity-50"
                             >
