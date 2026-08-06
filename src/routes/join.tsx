@@ -28,16 +28,10 @@ const ways = [
     href: "https://discord.gg/yuW3HM8w",
   },
   {
-    title: "Announcements",
-    body: "One short email per meetup: date, venue, topics, RSVP link. Nothing else.",
-    action: "Email the organisers",
-    href: "mailto:hello@moqbayarea.dev",
-  },
-  {
     title: "Speak or demo",
     body: "20 minutes, or 5 minutes with something half-working on screen. Both welcome.",
     action: "Pitch a session",
-    href: "mailto:talks@moqbayarea.dev",
+    to: "/contact",
   },
 ];
 
