@@ -135,6 +135,9 @@ function AdminMeetupsPage() {
     void queryClient.invalidateQueries({ queryKey: ["rsvps"] });
   };
 
+  const notify = useServerFn(notifyRsvpChange);
+
+
   const setRsvpStatus = useMutation({
     mutationFn: async ({
       id,
