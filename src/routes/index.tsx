@@ -5,6 +5,7 @@ import heroImage from "@/assets/hero-moq.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { formatEventDate, type MeetupRow } from "@/lib/meetups";
+import { AddToCalendar } from "@/components/add-to-calendar";
 
 
 export const Route = createFileRoute("/")({
@@ -188,6 +189,11 @@ function Index() {
                       </p>
                       {mine?.status === "waitlist" && (
                         <p className="mt-1 text-xs text-ember">You're on the waitlist</p>
+                      )}
+                      {mine?.status === "going" && (
+                        <div className="mt-3">
+                          <AddToCalendar event={m} />
+                        </div>
                       )}
                     </>
                   ) : (

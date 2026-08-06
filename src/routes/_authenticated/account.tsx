@@ -6,6 +6,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { formatEventDate } from "@/lib/meetups";
+import { AddToCalendar } from "@/components/add-to-calendar";
 
 
 export const Route = createFileRoute("/_authenticated/account")({
@@ -59,7 +60,7 @@ function AccountPage() {
       const { data, error } = await supabase
         .from("rsvps")
         .select(
-          "id, status, created_at, meetups(id, title, event_date, time_label, venue, city, status)",
+          "id, status, created_at, meetups(id, title, event_date, time_label, venue, city, summary, status)",
         )
         .eq("user_id", user!.id);
       if (error) throw error;
@@ -220,14 +221,17 @@ function AccountPage() {
                       {formatEventDate(m.event_date)} · {m.time_label} · {m.venue}, {m.city}
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => cancelRsvp.mutate(rsvp.id)}
-                    disabled={cancelRsvp.isPending}
-                    className="border border-border px-3 py-1.5 text-xs transition-colors hover:border-destructive hover:text-destructive disabled:opacity-50"
-                  >
-                    {rsvp.status === "going" ? "Cancel RSVP" : "Leave waitlist"}
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {rsvp.status === "going" && <AddToCalendar event={m} align="right" />}
+                    <button
+                      type="button"
+                      onClick={() => cancelRsvp.mutate(rsvp.id)}
+                      disabled={cancelRsvp.isPending}
+                      className="border border-border px-3 py-1.5 text-xs transition-colors hover:border-destructive hover:text-destructive disabled:opacity-50"
+                    >
+                      {rsvp.status === "going" ? "Cancel RSVP" : "Leave waitlist"}
+                    </button>
+                  </div>
                 </li>
               );
             })}
