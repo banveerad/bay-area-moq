@@ -137,7 +137,7 @@ function Index() {
             <span className="text-ember">in a room together.</span>
           </h1>
           <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-            A gathering of video streaming engineers, protocol nerds and codec people
+            A community of video streaming engineers, protocol nerds and codec people
             figuring out what live video looks like once it stops pretending to be HTTP.
           </p>
           <div className="mt-9">
