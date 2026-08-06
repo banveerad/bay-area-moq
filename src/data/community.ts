@@ -86,11 +86,6 @@ export const resources = [
         note: "Rust relay and CLI tools — the usual starting point.",
       },
       {
-        label: "moq-js",
-        href: "https://github.com/kixelated/moq-js",
-        note: "Browser publisher and player written in TypeScript.",
-      },
-      {
         label: "quic-go",
         href: "https://github.com/quic-go/quic-go",
         note: "Handy when you want to poke at the QUIC layer directly.",
