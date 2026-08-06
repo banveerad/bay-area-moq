@@ -82,7 +82,7 @@ export const resources = [
     items: [
       {
         label: "moq-rs",
-        href: "https://github.com/kixelated/moq-rs",
+        href: "https://github.com/cloudflare/moq-rs",
         note: "Rust relay and CLI tools — the usual starting point.",
       },
       {
