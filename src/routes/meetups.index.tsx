@@ -153,12 +153,15 @@ function MeetupsPage() {
             New meetups are coming soon. Join the community and we'll let you know the
             moment the next date is locked in.
           </p>
-          <Link
-            to="/join"
+          <a
+            href="https://discord.gg/yuW3HM8w"
+            target="_blank"
+            rel="noreferrer"
             className="mt-6 inline-block border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
           >
             Join the community
-          </Link>
+          </a>
+
         </div>
       )}
 
