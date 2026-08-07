@@ -219,7 +219,7 @@ function Index() {
                   {m.venue} — {m.city}
                 </p>
 
-                <div className="mt-6 border-t border-border pt-5">
+                <div className="relative z-10 mt-6 border-t border-border pt-5">
                   {isAuthenticated ? (
                     <>
                       <button
