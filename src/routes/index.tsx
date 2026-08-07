@@ -8,6 +8,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { formatEventDate, type MeetupRow } from "@/lib/meetups";
 import { AddToCalendar } from "@/components/add-to-calendar";
 import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
+import { RotatingWords } from "@/components/rotating-words";
+
 
 
 export const Route = createFileRoute("/")({
@@ -134,8 +136,18 @@ function Index() {
           <h1 className="mt-5 max-w-3xl text-4xl leading-[1.05] sm:text-6xl">
             Community for
             <br />
-            <span className="text-ember">Media Over QUIC.</span>
+            <RotatingWords
+              className="text-ember"
+              words={[
+                "Media Over QUIC.",
+                "Live streaming.",
+                "Video on demand.",
+                "Advertising.",
+                "General video tech.",
+              ]}
+            />
           </h1>
+
           <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
             A community of streaming engineers, protocol nerds and codec people figuring
             out what live video looks like once it stops pretending to be HTTP, and what
