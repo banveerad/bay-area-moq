@@ -35,8 +35,11 @@ export function SiteHeader() {
             <Link
               key={l.to}
               to={l.to}
-              className="whitespace-nowrap px-3 py-2 text-muted-foreground transition-colors hover:text-foreground"
-              activeProps={{ className: "whitespace-nowrap px-3 py-2 text-foreground" }}
+              className="relative whitespace-nowrap px-3 py-2 text-muted-foreground transition-colors after:absolute after:inset-x-3 after:bottom-1 after:h-px after:bg-transparent hover:text-foreground"
+              activeProps={{
+                className:
+                  "relative whitespace-nowrap px-3 py-2 text-foreground after:absolute after:inset-x-3 after:bottom-1 after:h-px after:bg-ember",
+              }}
             >
               {l.label}
             </Link>
@@ -44,8 +47,11 @@ export function SiteHeader() {
           {hasAccess && (
             <Link
               to="/admin"
-              className="whitespace-nowrap px-3 py-2 text-muted-foreground transition-colors hover:text-foreground"
-              activeProps={{ className: "whitespace-nowrap px-3 py-2 text-foreground" }}
+              className="relative whitespace-nowrap px-3 py-2 text-muted-foreground transition-colors after:absolute after:inset-x-3 after:bottom-1 after:h-px after:bg-transparent hover:text-foreground"
+              activeProps={{
+                className:
+                  "relative whitespace-nowrap px-3 py-2 text-foreground after:absolute after:inset-x-3 after:bottom-1 after:h-px after:bg-ember",
+              }}
             >
               Organiser
             </Link>
@@ -91,9 +97,10 @@ export function SiteHeader() {
               key={l.to}
               to={l.to}
               onClick={close}
-              className="block border-b border-border/60 py-3 text-muted-foreground transition-colors hover:text-foreground"
+              className="block border-b border-border/60 py-3 pl-3 text-muted-foreground transition-colors hover:text-foreground"
               activeProps={{
-                className: "block border-b border-border/60 py-3 text-foreground",
+                className:
+                  "block border-b border-border/60 border-l-2 border-l-ember bg-surface py-3 pl-3 text-foreground",
               }}
             >
               {l.label}
@@ -103,8 +110,11 @@ export function SiteHeader() {
             <Link
               to="/admin"
               onClick={close}
-              className="block border-b border-border/60 py-3 text-muted-foreground transition-colors hover:text-foreground"
-              activeProps={{ className: "block border-b border-border/60 py-3 text-foreground" }}
+              className="block border-b border-border/60 py-3 pl-3 text-muted-foreground transition-colors hover:text-foreground"
+              activeProps={{
+                className:
+                  "block border-b border-border/60 border-l-2 border-l-ember bg-surface py-3 pl-3 text-foreground",
+              }}
             >
               Organiser
             </Link>
