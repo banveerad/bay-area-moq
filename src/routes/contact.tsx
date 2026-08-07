@@ -154,7 +154,7 @@ function ContactPage() {
             disabled={sending}
             className="w-full bg-ember px-6 py-3 font-display text-sm text-primary-foreground transition-colors hover:bg-ember-soft disabled:opacity-60"
           >
-            {sending ? "Sending…" : "Send to organisers"}
+            {sending ? "Sending…" : "Send"}
           </button>
           <p className="text-xs text-muted-foreground">
             Goes straight to the organisers' inbox — they will reply to the email address
