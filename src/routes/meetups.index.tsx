@@ -169,27 +169,30 @@ function MeetupsPage() {
           const going = Boolean(mine);
           const full = m.capacity != null && m.rsvp_count >= m.capacity;
           return (
-            <li key={m.id} className="grid gap-4 py-8 md:grid-cols-[210px_1fr_190px]">
+            <li
+              key={m.id}
+              className="group relative grid gap-4 py-8 transition-colors md:grid-cols-[210px_1fr_190px]"
+            >
+              <Link
+                to="/meetups/$meetupId"
+                params={{ meetupId: m.id }}
+                aria-label={m.title}
+                className="absolute inset-0 z-0"
+              />
               <div className="font-display text-sm">
                 <p className="text-ember">{formatEventDate(m.event_date)}</p>
                 <p className="mt-1 text-muted-foreground">{m.time_label}</p>
               </div>
               <div>
-                <h2 className="text-lg leading-snug">
-                  <Link
-                    to="/meetups/$meetupId"
-                    params={{ meetupId: m.id }}
-                    className="hover:text-ember"
-                  >
-                    {m.title}
-                  </Link>
+                <h2 className="text-lg leading-snug transition-colors group-hover:text-ember">
+                  {m.title}
                 </h2>
                 <p className="mt-2 text-sm text-muted-foreground">{m.summary}</p>
                 <p className="mt-4 font-display text-xs text-muted-foreground">
                   {m.venue} — {m.city}
                 </p>
               </div>
-              <div className="md:text-right">
+              <div className="relative z-10 md:text-right">
                 {m.status !== "open" && (
                   <p className="font-display text-xs tracking-widest uppercase text-muted-foreground">
                     {statusLabel[m.status] ?? m.status}
