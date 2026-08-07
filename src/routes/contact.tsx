@@ -135,14 +135,16 @@ function ContactPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-ember px-6 py-3 font-display text-sm text-primary-foreground transition-colors hover:bg-ember-soft"
+            disabled={sending}
+            className="w-full bg-ember px-6 py-3 font-display text-sm text-primary-foreground transition-colors hover:bg-ember-soft disabled:opacity-60"
           >
-            Open in email
+            {sending ? "Sending…" : "Send to organisers"}
           </button>
           <p className="text-xs text-muted-foreground">
-            This opens your own mail client with the message ready to send — nothing is
-            stored here.
+            Goes straight to the organisers' inbox — they will reply to the email address
+            you enter above.
           </p>
+
         </form>
       </div>
     </div>
