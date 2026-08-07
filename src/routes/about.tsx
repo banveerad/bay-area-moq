@@ -61,7 +61,7 @@ function AboutPage() {
           <h2 className="mt-1 font-display text-sm">
             Banashankar Veerad{" "}
             <span className="font-body text-xs font-normal text-muted-foreground">
-              A video tech novice bringing minds together
+              A video tech novice bringing great minds together
             </span>
           </h2>
           <a
