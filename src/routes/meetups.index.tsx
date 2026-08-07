@@ -175,7 +175,15 @@ function MeetupsPage() {
                 <p className="mt-1 text-muted-foreground">{m.time_label}</p>
               </div>
               <div>
-                <h2 className="text-lg leading-snug">{m.title}</h2>
+                <h2 className="text-lg leading-snug">
+                  <Link
+                    to="/meetups/$meetupId"
+                    params={{ meetupId: m.id }}
+                    className="hover:text-ember"
+                  >
+                    {m.title}
+                  </Link>
+                </h2>
                 <p className="mt-2 text-sm text-muted-foreground">{m.summary}</p>
                 <p className="mt-4 font-display text-xs text-muted-foreground">
                   {m.venue} — {m.city}
