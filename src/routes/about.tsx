@@ -58,7 +58,12 @@ function AboutPage() {
         />
         <div>
           <p className="eyebrow">Run by</p>
-          <h2 className="mt-1 font-display text-sm">Banashankar Veerad</h2>
+          <h2 className="mt-1 font-display text-sm">
+            Banashankar Veerad{" "}
+            <span className="font-body text-xs font-normal text-muted-foreground">
+              A video tech novice bringing minds together
+            </span>
+          </h2>
           <a
             href="https://www.linkedin.com/in/banashankar-veerad-b5892923/"
             target="_blank"
