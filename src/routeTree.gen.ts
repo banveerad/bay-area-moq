@@ -21,6 +21,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WhatIsMoqRouteImport } from './routes/what-is-moq'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as MeetupsIndexRouteImport } from './routes/meetups.index'
+import { Route as MeetupsMeetupIdRouteImport } from './routes/meetups.$meetupId'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminMeetupsRouteImport } from './routes/_authenticated/admin/meetups'
 import { Route as AuthenticatedAdminMembersRouteImport } from './routes/_authenticated/admin/members'
@@ -89,6 +90,11 @@ const MeetupsIndexRoute = MeetupsIndexRouteImport.update({
   path: '/meetups/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MeetupsMeetupIdRoute = MeetupsMeetupIdRouteImport.update({
+  id: '/meetups/$meetupId',
+  path: '/meetups/$meetupId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/account': typeof AuthenticatedAccountRoute
+  '/meetups/$meetupId': typeof MeetupsMeetupIdRoute
   '/meetups/': typeof MeetupsIndexRoute
   '/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/account': typeof AuthenticatedAccountRoute
+  '/meetups/$meetupId': typeof MeetupsMeetupIdRoute
   '/meetups': typeof MeetupsIndexRoute
   '/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
@@ -190,6 +198,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
+  '/meetups/$meetupId': typeof MeetupsMeetupIdRoute
   '/meetups/': typeof MeetupsIndexRoute
   '/_authenticated/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
   '/_authenticated/admin/members': typeof AuthenticatedAdminMembersRoute
@@ -213,6 +222,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/what-is-moq'
     | '/account'
+    | '/meetups/$meetupId'
     | '/meetups/'
     | '/admin/meetups'
     | '/admin/members'
@@ -234,6 +244,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/what-is-moq'
     | '/account'
+    | '/meetups/$meetupId'
     | '/meetups'
     | '/admin/meetups'
     | '/admin/members'
@@ -256,6 +267,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/what-is-moq'
     | '/_authenticated/account'
+    | '/meetups/$meetupId'
     | '/meetups/'
     | '/_authenticated/admin/meetups'
     | '/_authenticated/admin/members'
@@ -278,6 +290,7 @@ export interface RootRouteChildren {
   ResourcesRoute: typeof ResourcesRoute
   TermsRoute: typeof TermsRoute
   WhatIsMoqRoute: typeof WhatIsMoqRoute
+  MeetupsMeetupIdRoute: typeof MeetupsMeetupIdRoute
   MeetupsIndexRoute: typeof MeetupsIndexRoute
   ApiPublicCalendarMeetupIdDoticsRoute: typeof ApiPublicCalendarMeetupIdDoticsRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -371,6 +384,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MeetupsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/meetups/$meetupId': {
+      id: '/meetups/$meetupId'
+      path: '/meetups/$meetupId'
+      fullPath: '/meetups/$meetupId'
+      preLoaderRoute: typeof MeetupsMeetupIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/admin'
@@ -460,6 +480,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResourcesRoute: ResourcesRoute,
   TermsRoute: TermsRoute,
   WhatIsMoqRoute: WhatIsMoqRoute,
+  MeetupsMeetupIdRoute: MeetupsMeetupIdRoute,
   MeetupsIndexRoute: MeetupsIndexRoute,
   ApiPublicCalendarMeetupIdDoticsRoute: ApiPublicCalendarMeetupIdDoticsRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
