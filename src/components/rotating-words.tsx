@@ -22,18 +22,19 @@ export function RotatingWords({
   }, [words.length, intervalMs]);
 
   return (
-    <span className="relative inline-block align-top">
+    <span className="relative inline-block overflow-hidden align-top">
       {/* reserve width for the longest word so layout stays stable */}
       <span aria-hidden className="invisible block">
         {words.reduce((a, b) => (b.length > a.length ? b : a), "")}
       </span>
       <span
         key={index}
-        className={`absolute inset-0 animate-fade-in ${className ?? ""}`}
+        className={`absolute inset-0 roll-in-left ${className ?? ""}`}
       >
         {words[index]}
       </span>
       <span className="sr-only">{words.join(", ")}</span>
     </span>
   );
+
 }
