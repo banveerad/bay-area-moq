@@ -9,7 +9,7 @@ import { formatEventDate, statusLabel, type MeetupRow } from "@/lib/meetups";
 import { AddToCalendar } from "@/components/add-to-calendar";
 import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
 
-export const Route = createFileRoute("/meetups")({
+export const Route = createFileRoute("/meetups/")({
   head: () => ({
     meta: [
       { title: "MoQ Meetups & Hack Nights in the Bay Area" },
