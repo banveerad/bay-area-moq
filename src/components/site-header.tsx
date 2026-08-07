@@ -58,7 +58,18 @@ export function SiteHeader() {
               Organiser
             </Link>
           )}
+          <a
+            href={DISCORD_URL}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Join our Discord"
+            title="Join our Discord"
+            className="ml-1 grid h-9 w-9 place-items-center text-muted-foreground transition-colors hover:text-ember"
+          >
+            <DiscordIcon className="h-5 w-5" />
+          </a>
           {!loading &&
+
             (isAuthenticated ? (
               <Link
                 to="/account"
