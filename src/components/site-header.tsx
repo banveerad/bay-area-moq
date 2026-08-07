@@ -35,11 +35,7 @@ export function SiteHeader() {
             <Link
               key={l.to}
               to={l.to}
-              className="relative whitespace-nowrap px-3 py-2 text-muted-foreground transition-colors after:absolute after:inset-x-3 after:bottom-1 after:h-px after:bg-transparent hover:text-foreground"
-              activeProps={{
-                className:
-                  "relative whitespace-nowrap px-3 py-2 text-foreground after:absolute after:inset-x-3 after:bottom-1 after:h-px after:bg-ember",
-              }}
+              className="relative whitespace-nowrap px-3 py-2 text-muted-foreground transition-colors hover:text-foreground data-[status=active]:text-foreground data-[status=active]:after:absolute data-[status=active]:after:inset-x-3 data-[status=active]:after:bottom-1 data-[status=active]:after:h-0.5 data-[status=active]:after:bg-ember"
             >
               {l.label}
             </Link>
@@ -47,11 +43,7 @@ export function SiteHeader() {
           {hasAccess && (
             <Link
               to="/admin"
-              className="relative whitespace-nowrap px-3 py-2 text-muted-foreground transition-colors after:absolute after:inset-x-3 after:bottom-1 after:h-px after:bg-transparent hover:text-foreground"
-              activeProps={{
-                className:
-                  "relative whitespace-nowrap px-3 py-2 text-foreground after:absolute after:inset-x-3 after:bottom-1 after:h-px after:bg-ember",
-              }}
+              className="relative whitespace-nowrap px-3 py-2 text-muted-foreground transition-colors hover:text-foreground data-[status=active]:text-foreground data-[status=active]:after:absolute data-[status=active]:after:inset-x-3 data-[status=active]:after:bottom-1 data-[status=active]:after:h-0.5 data-[status=active]:after:bg-ember"
             >
               Organiser
             </Link>
