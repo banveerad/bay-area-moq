@@ -15,13 +15,13 @@ import { RotatingWords } from "@/components/rotating-words";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MoQ Bay Area — Media Over QUIC Meetups & Community" },
+      { title: "Bay Area — Video Tech and Media Over QUIC Meetups & Community" },
       {
         name: "description",
         content:
           "A Bay Area community for Media Over QUIC and low-latency video streaming: meetups, hack nights, demos and resources across SF, Oakland and the Peninsula.",
       },
-      { property: "og:title", content: "MoQ Bay Area — Media Over QUIC Meetups & Community" },
+      { property: "og:title", content: "Bay Area — Video Tech and Media Over QUIC Meetups & Community" },
       {
         property: "og:description",
         content:
