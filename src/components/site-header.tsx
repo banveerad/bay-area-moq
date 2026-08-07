@@ -97,9 +97,10 @@ export function SiteHeader() {
               key={l.to}
               to={l.to}
               onClick={close}
-              className="block border-b border-border/60 py-3 text-muted-foreground transition-colors hover:text-foreground"
+              className="block border-b border-border/60 py-3 pl-3 text-muted-foreground transition-colors hover:text-foreground"
               activeProps={{
-                className: "block border-b border-border/60 py-3 text-foreground",
+                className:
+                  "block border-b border-border/60 border-l-2 border-l-ember bg-surface py-3 pl-3 text-foreground",
               }}
             >
               {l.label}
@@ -109,8 +110,11 @@ export function SiteHeader() {
             <Link
               to="/admin"
               onClick={close}
-              className="block border-b border-border/60 py-3 text-muted-foreground transition-colors hover:text-foreground"
-              activeProps={{ className: "block border-b border-border/60 py-3 text-foreground" }}
+              className="block border-b border-border/60 py-3 pl-3 text-muted-foreground transition-colors hover:text-foreground"
+              activeProps={{
+                className:
+                  "block border-b border-border/60 border-l-2 border-l-ember bg-surface py-3 pl-3 text-foreground",
+              }}
             >
               Organiser
             </Link>
