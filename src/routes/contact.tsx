@@ -59,31 +59,9 @@ function ContactPage() {
         meetup night, the chat is faster than email.
       </p>
 
-      <div className="mt-12 grid items-start gap-10 md:grid-cols-[1fr_1.1fr]">
-        <div className="space-y-px bg-border">
-          {channels.map((c) => (
-            <a
-              key={c.href}
-              href={c.href}
-              className="block bg-surface p-6 transition-colors hover:bg-surface-raised"
-            >
-              <p className="font-display text-xs tracking-widest text-ember uppercase">
-                {c.label}
-              </p>
-              <p className="mt-2 text-sm">{c.value}</p>
-            </a>
-          ))}
-          <div className="bg-surface p-6">
-            <p className="font-display text-xs tracking-widest text-muted-foreground uppercase">
-              Where we meet
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Rotating venues across San Francisco, Oakland, Palo Alto and San Jose.
-            </p>
-          </div>
-        </div>
-
+      <div className="mt-12 max-w-xl">
         <form
+
           className="space-y-5 border border-border bg-surface p-7"
           onSubmit={(e) => {
             e.preventDefault();
