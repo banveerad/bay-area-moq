@@ -198,25 +198,28 @@ function Index() {
             const going = Boolean(mine);
             const full = m.capacity != null && m.rsvp_count >= m.capacity;
             return (
-              <article key={m.id} className="border border-border bg-surface p-7">
+              <article
+                key={m.id}
+                className="group relative border border-border bg-surface p-7 transition-colors hover:border-ember"
+              >
+                <Link
+                  to="/meetups/$meetupId"
+                  params={{ meetupId: m.id }}
+                  aria-label={m.title}
+                  className="absolute inset-0 z-0"
+                />
                 <p className="font-display text-xs tracking-widest text-ember uppercase">
                   {formatEventDate(m.event_date)} · {m.time_label}
                 </p>
-                <h3 className="mt-4 text-lg leading-snug">
-                  <Link
-                    to="/meetups/$meetupId"
-                    params={{ meetupId: m.id }}
-                    className="hover:text-ember"
-                  >
-                    {m.title}
-                  </Link>
+                <h3 className="mt-4 text-lg leading-snug transition-colors group-hover:text-ember">
+                  {m.title}
                 </h3>
                 <p className="mt-3 text-sm text-muted-foreground">{m.summary}</p>
                 <p className="mt-6 font-display text-xs text-muted-foreground">
                   {m.venue} — {m.city}
                 </p>
 
-                <div className="mt-6 border-t border-border pt-5">
+                <div className="relative z-10 mt-6 border-t border-border pt-5">
                   {isAuthenticated ? (
                     <>
                       <button
