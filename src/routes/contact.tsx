@@ -21,23 +21,8 @@ export const Route = createFileRoute("/contact")({
   component: ContactPage,
 });
 
-const channels = [
-  {
-    label: "General questions",
-    value: "hello@moqbayarea.dev",
-    href: "mailto:hello@moqbayarea.dev",
-  },
-  {
-    label: "Talks & demos",
-    value: "talks@moqbayarea.dev",
-    href: "mailto:talks@moqbayarea.dev",
-  },
-  {
-    label: "Offering a venue",
-    value: "venues@moqbayarea.dev",
-    href: "mailto:venues@moqbayarea.dev",
-  },
-];
+
+
 
 const topics = ["General question", "Talk or demo pitch", "Offering a venue", "Something else"];
 
