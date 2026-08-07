@@ -36,7 +36,7 @@ const goals = [
 
 const principles = [
   ["Working code beats slideware", "Something runs on screen every night, even when it fails live."],
-  ["No vendor pitches", "Talk about what you built and how it broke."],
+  ["Show your work", "Talk about what you built and how it broke."],
   ["Beginners are the point", "Explain the acronym the first time you use it."],
   ["Everything gets shared", "Slides, repos and notes go out after each night."],
 ];
