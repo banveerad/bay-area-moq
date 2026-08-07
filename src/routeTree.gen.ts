@@ -15,12 +15,13 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as JoinRouteImport } from './routes/join'
-import { Route as MeetupsRouteImport } from './routes/meetups'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WhatIsMoqRouteImport } from './routes/what-is-moq'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
+import { Route as MeetupsIndexRouteImport } from './routes/meetups.index'
+import { Route as MeetupsMeetupIdRouteImport } from './routes/meetups.$meetupId'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminMeetupsRouteImport } from './routes/_authenticated/admin/meetups'
 import { Route as AuthenticatedAdminMembersRouteImport } from './routes/_authenticated/admin/members'
@@ -59,11 +60,6 @@ const JoinRoute = JoinRouteImport.update({
   path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MeetupsRoute = MeetupsRouteImport.update({
-  id: '/meetups',
-  path: '/meetups',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -88,6 +84,16 @@ const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
   id: '/account',
   path: '/account',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const MeetupsIndexRoute = MeetupsIndexRouteImport.update({
+  id: '/meetups/',
+  path: '/meetups/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeetupsMeetupIdRoute = MeetupsMeetupIdRouteImport.update({
+  id: '/meetups/$meetupId',
+  path: '/meetups/$meetupId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/admin/',
@@ -141,12 +147,13 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/join': typeof JoinRoute
-  '/meetups': typeof MeetupsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/terms': typeof TermsRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/account': typeof AuthenticatedAccountRoute
+  '/meetups/$meetupId': typeof MeetupsMeetupIdRoute
+  '/meetups/': typeof MeetupsIndexRoute
   '/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
   '/admin/resources': typeof AuthenticatedAdminResourcesRoute
@@ -162,12 +169,13 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/join': typeof JoinRoute
-  '/meetups': typeof MeetupsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/terms': typeof TermsRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/account': typeof AuthenticatedAccountRoute
+  '/meetups/$meetupId': typeof MeetupsMeetupIdRoute
+  '/meetups': typeof MeetupsIndexRoute
   '/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
   '/admin/resources': typeof AuthenticatedAdminResourcesRoute
@@ -185,12 +193,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/join': typeof JoinRoute
-  '/meetups': typeof MeetupsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/terms': typeof TermsRoute
   '/what-is-moq': typeof WhatIsMoqRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
+  '/meetups/$meetupId': typeof MeetupsMeetupIdRoute
+  '/meetups/': typeof MeetupsIndexRoute
   '/_authenticated/admin/meetups': typeof AuthenticatedAdminMeetupsRoute
   '/_authenticated/admin/members': typeof AuthenticatedAdminMembersRoute
   '/_authenticated/admin/resources': typeof AuthenticatedAdminResourcesRoute
@@ -208,12 +217,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/join'
-    | '/meetups'
     | '/reset-password'
     | '/resources'
     | '/terms'
     | '/what-is-moq'
     | '/account'
+    | '/meetups/$meetupId'
+    | '/meetups/'
     | '/admin/meetups'
     | '/admin/members'
     | '/admin/resources'
@@ -229,12 +239,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/join'
-    | '/meetups'
     | '/reset-password'
     | '/resources'
     | '/terms'
     | '/what-is-moq'
     | '/account'
+    | '/meetups/$meetupId'
+    | '/meetups'
     | '/admin/meetups'
     | '/admin/members'
     | '/admin/resources'
@@ -251,12 +262,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/join'
-    | '/meetups'
     | '/reset-password'
     | '/resources'
     | '/terms'
     | '/what-is-moq'
     | '/_authenticated/account'
+    | '/meetups/$meetupId'
+    | '/meetups/'
     | '/_authenticated/admin/meetups'
     | '/_authenticated/admin/members'
     | '/_authenticated/admin/resources'
@@ -274,11 +286,12 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   JoinRoute: typeof JoinRoute
-  MeetupsRoute: typeof MeetupsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResourcesRoute: typeof ResourcesRoute
   TermsRoute: typeof TermsRoute
   WhatIsMoqRoute: typeof WhatIsMoqRoute
+  MeetupsMeetupIdRoute: typeof MeetupsMeetupIdRoute
+  MeetupsIndexRoute: typeof MeetupsIndexRoute
   ApiPublicCalendarMeetupIdDoticsRoute: typeof ApiPublicCalendarMeetupIdDoticsRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -329,13 +342,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JoinRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/meetups': {
-      id: '/meetups'
-      path: '/meetups'
-      fullPath: '/meetups'
-      preLoaderRoute: typeof MeetupsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -370,6 +376,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/account'
       preLoaderRoute: typeof AuthenticatedAccountRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/meetups/': {
+      id: '/meetups/'
+      path: '/meetups'
+      fullPath: '/meetups/'
+      preLoaderRoute: typeof MeetupsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meetups/$meetupId': {
+      id: '/meetups/$meetupId'
+      path: '/meetups/$meetupId'
+      fullPath: '/meetups/$meetupId'
+      preLoaderRoute: typeof MeetupsMeetupIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
@@ -456,11 +476,12 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   JoinRoute: JoinRoute,
-  MeetupsRoute: MeetupsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ResourcesRoute: ResourcesRoute,
   TermsRoute: TermsRoute,
   WhatIsMoqRoute: WhatIsMoqRoute,
+  MeetupsMeetupIdRoute: MeetupsMeetupIdRoute,
+  MeetupsIndexRoute: MeetupsIndexRoute,
   ApiPublicCalendarMeetupIdDoticsRoute: ApiPublicCalendarMeetupIdDoticsRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
@@ -469,13 +490,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -202,7 +202,15 @@ function Index() {
                 <p className="font-display text-xs tracking-widest text-ember uppercase">
                   {formatEventDate(m.event_date)} · {m.time_label}
                 </p>
-                <h3 className="mt-4 text-lg leading-snug">{m.title}</h3>
+                <h3 className="mt-4 text-lg leading-snug">
+                  <Link
+                    to="/meetups/$meetupId"
+                    params={{ meetupId: m.id }}
+                    className="hover:text-ember"
+                  >
+                    {m.title}
+                  </Link>
+                </h3>
                 <p className="mt-3 text-sm text-muted-foreground">{m.summary}</p>
                 <p className="mt-6 font-display text-xs text-muted-foreground">
                   {m.venue} — {m.city}
