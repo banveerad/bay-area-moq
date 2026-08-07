@@ -40,9 +40,25 @@ function ContactPage() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedMessage = message.trim();
+    if (!trimmedName) {
+      toast.error("Please enter your name.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+    if (trimmedMessage.length < 5) {
+      toast.error("Please write at least 5 characters in your message.");
+      return;
+    }
     setSending(true);
     try {
-      await send({ data: { name, email, topic: topic ?? "General question", message } });
+      await send({ data: { name: trimmedName, email: trimmedEmail, topic: topic ?? "General question", message: trimmedMessage } });
+
       toast.success("Message sent to the organisers");
       setName("");
       setEmail("");
