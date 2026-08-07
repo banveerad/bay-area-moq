@@ -35,8 +35,11 @@ export function SiteHeader() {
             <Link
               key={l.to}
               to={l.to}
-              className="whitespace-nowrap px-3 py-2 text-muted-foreground transition-colors hover:text-foreground"
-              activeProps={{ className: "whitespace-nowrap px-3 py-2 text-foreground" }}
+              className="relative whitespace-nowrap px-3 py-2 text-muted-foreground transition-colors after:absolute after:inset-x-3 after:bottom-1 after:h-px after:bg-transparent hover:text-foreground"
+              activeProps={{
+                className:
+                  "relative whitespace-nowrap px-3 py-2 text-foreground after:absolute after:inset-x-3 after:bottom-1 after:h-px after:bg-ember",
+              }}
             >
               {l.label}
             </Link>
@@ -44,8 +47,11 @@ export function SiteHeader() {
           {hasAccess && (
             <Link
               to="/admin"
-              className="whitespace-nowrap px-3 py-2 text-muted-foreground transition-colors hover:text-foreground"
-              activeProps={{ className: "whitespace-nowrap px-3 py-2 text-foreground" }}
+              className="relative whitespace-nowrap px-3 py-2 text-muted-foreground transition-colors after:absolute after:inset-x-3 after:bottom-1 after:h-px after:bg-transparent hover:text-foreground"
+              activeProps={{
+                className:
+                  "relative whitespace-nowrap px-3 py-2 text-foreground after:absolute after:inset-x-3 after:bottom-1 after:h-px after:bg-ember",
+              }}
             >
               Organiser
             </Link>
