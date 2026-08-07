@@ -44,7 +44,7 @@ export async function announceMeetup(meetupId: string) {
           city: meetup.city,
           summary: meetup.summary,
           capacity: meetup.capacity,
-          rsvpUrl: 'https://moqbayarea.com/meetups',
+          rsvpUrl: `https://moqbayarea.com/meetups/${meetup.id}`,
           googleUrl: google,
           outlookUrl: outlook,
           icsUrl,
