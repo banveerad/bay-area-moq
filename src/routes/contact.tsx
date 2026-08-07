@@ -27,13 +27,28 @@ export const Route = createFileRoute("/contact")({
 const topics = ["General question", "Talk or demo pitch", "Offering a venue", "Something else"];
 
 function ContactPage() {
+  const send = useServerFn(sendContactMessage);
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [topic, setTopic] = useState(topics[0]);
   const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
 
-  const mailto = `mailto:hello@moqbayarea.dev?subject=${encodeURIComponent(
-    `[MoQ Bay Area] ${topic}`,
-  )}&body=${encodeURIComponent(`${message}\n\n— ${name}`)}`;
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+    try {
+      await send({ data: { name, email, topic: topic ?? "General question", message } });
+      toast.success("Message sent to the organisers");
+      setName("");
+      setEmail("");
+      setMessage("");
+    } catch {
+      toast.error("Could not send your message. Please try again.");
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-4xl px-5 py-20">
@@ -45,14 +60,7 @@ function ContactPage() {
       </p>
 
       <div className="mt-12 max-w-xl">
-        <form
-
-          className="space-y-5 border border-border bg-surface p-7"
-          onSubmit={(e) => {
-            e.preventDefault();
-            window.location.href = mailto;
-          }}
-        >
+        <form className="space-y-5 border border-border bg-surface p-7" onSubmit={onSubmit}>
           <div>
             <label
               htmlFor="name"
@@ -68,6 +76,23 @@ function ContactPage() {
               className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm outline-none focus:border-ember"
             />
           </div>
+          <div>
+            <label
+              htmlFor="email"
+              className="font-display text-xs tracking-widest text-muted-foreground uppercase"
+            >
+              Your email
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm outline-none focus:border-ember"
+            />
+          </div>
+
           <div>
             <label
               htmlFor="topic"
