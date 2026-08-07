@@ -132,7 +132,18 @@ export function SiteHeader() {
               Organiser
             </Link>
           )}
+          <a
+            href={DISCORD_URL}
+            target="_blank"
+            rel="noreferrer"
+            onClick={close}
+            className="flex items-center gap-2 border-b border-border/60 py-3 pl-3 text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <DiscordIcon className="h-4 w-4" />
+            Discord
+          </a>
           {!loading &&
+
             (isAuthenticated ? (
               <Link
                 to="/account"
