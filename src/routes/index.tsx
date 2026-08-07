@@ -143,8 +143,12 @@ function Index() {
                 "Live streaming.",
                 "Video on demand.",
                 "Advertising.",
+                "Encoding.",
+                "Packaging.",
+                "CDNs.",
                 "General video tech.",
               ]}
+
             />
           </h1>
 
