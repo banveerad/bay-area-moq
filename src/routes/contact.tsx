@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { sendContactMessage } from "@/lib/contact.functions";
+import { Turnstile } from "@/components/turnstile";
 
 
 export const Route = createFileRoute("/contact")({
@@ -37,6 +38,8 @@ function ContactPage() {
   const [topic, setTopic] = useState(topics[0]);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaResetKey, setCaptchaResetKey] = useState(0);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,17 +58,35 @@ function ContactPage() {
       toast.error("Please write at least 5 characters in your message.");
       return;
     }
+    if (!captchaToken) {
+      toast.error("Please complete the anti-spam check.");
+      return;
+    }
     setSending(true);
     try {
-      await send({ data: { name: trimmedName, email: trimmedEmail, topic: topic ?? "General question", message: trimmedMessage } });
+      await send({
+        data: {
+          name: trimmedName,
+          email: trimmedEmail,
+          topic: topic ?? "General question",
+          message: trimmedMessage,
+          captchaToken,
+        },
+      });
 
       toast.success("Message sent to the organisers");
       setName("");
       setEmail("");
       setMessage("");
-    } catch {
-      toast.error("Could not send your message. Please try again.");
+    } catch (err) {
+      toast.error(
+        err instanceof Error && err.message.includes("captcha")
+          ? "Anti-spam check failed. Please try again."
+          : "Could not send your message. Please try again.",
+      );
     } finally {
+      setCaptchaToken(null);
+      setCaptchaResetKey((k) => k + 1);
       setSending(false);
     }
   };
@@ -149,9 +170,11 @@ function ContactPage() {
               className="mt-2 w-full resize-y border border-input bg-background px-4 py-3 text-sm outline-none focus:border-ember"
             />
           </div>
+          <Turnstile onVerify={setCaptchaToken} resetKey={captchaResetKey} />
+
           <button
             type="submit"
-            disabled={sending}
+            disabled={sending || !captchaToken}
             className="w-full bg-ember px-6 py-3 font-display text-sm text-primary-foreground transition-colors hover:bg-ember-soft disabled:opacity-60"
           >
             {sending ? "Sending…" : "Send"}
