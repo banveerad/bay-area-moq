@@ -1,6 +1,18 @@
 import { useEffect, useRef } from "react";
 
 export const TURNSTILE_SITE_KEY = "0x4AAAAAAELWQ2DQMZzTp3LY";
+/** Cloudflare's always-passes test key, used on hosts not registered with the real sitekey. */
+const TURNSTILE_TEST_SITE_KEY = "1x00000000000000000000AA";
+
+/** Hostnames allowed by the real Turnstile sitekey. */
+const PRODUCTION_HOSTS = ["moqbayarea.com", "www.moqbayarea.com", "bay-area-moq.lovable.app"];
+
+function siteKeyForHost() {
+  if (typeof window === "undefined") return TURNSTILE_SITE_KEY;
+  return PRODUCTION_HOSTS.includes(window.location.hostname)
+    ? TURNSTILE_SITE_KEY
+    : TURNSTILE_TEST_SITE_KEY;
+}
 
 const SCRIPT_ID = "cf-turnstile-script";
 const SCRIPT_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
