@@ -72,7 +72,7 @@ export function Turnstile({
         if (cancelled || !holder.current || !window.turnstile) return;
         holder.current.innerHTML = "";
         widgetId.current = window.turnstile.render(holder.current, {
-          sitekey: TURNSTILE_SITE_KEY,
+          sitekey: siteKeyForHost(),
           theme: "dark",
           callback: (token) => verify.current(token),
           "expired-callback": () => verify.current(null),
