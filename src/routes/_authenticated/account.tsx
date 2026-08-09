@@ -249,8 +249,14 @@ function AccountPage() {
             {sortedRsvps.map((rsvp) => {
               const m = rsvp.meetups!;
               return (
-                <li key={rsvp.id} className="flex flex-wrap items-start justify-between gap-4 bg-surface px-4 py-4">
-                  <div>
+                <li key={rsvp.id} className="relative flex flex-wrap items-start justify-between gap-4 bg-surface px-4 py-4 transition-colors hover:bg-surface/70">
+                  <Link
+                    to="/meetups/$meetupId"
+                    params={{ meetupId: m.id }}
+                    aria-label={`View ${m.title}`}
+                    className="absolute inset-0 z-0"
+                  />
+                  <div className="pointer-events-none relative z-10">
                     <p className="font-display text-xs tracking-widest uppercase">
                       <span className={rsvp.status === "going" ? "text-ember" : "text-muted-foreground"}>
                         {rsvp.status === "going" ? "Going" : "Waitlisted"}
@@ -261,13 +267,13 @@ function AccountPage() {
                       {formatEventDate(m.event_date)} · {m.time_label} · {m.venue}, {m.city}
                     </p>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="relative z-10 flex flex-wrap items-center gap-2">
                     {rsvp.status === "going" && <AddToCalendar event={m} align="right" />}
                     <button
                       type="button"
                       onClick={() => cancelRsvp.mutate({ id: rsvp.id, meetupId: rsvp.meetups!.id })}
                       disabled={cancelRsvp.isPending}
-                      className="border border-border px-3 py-1.5 text-xs transition-colors hover:border-destructive hover:text-destructive disabled:opacity-50"
+                      className="border border-border bg-surface px-3 py-1.5 text-xs transition-colors hover:border-destructive hover:text-destructive disabled:opacity-50"
                     >
                       {rsvp.status === "going" ? "Cancel RSVP" : "Leave waitlist"}
                     </button>
