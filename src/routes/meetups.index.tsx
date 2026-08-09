@@ -190,7 +190,9 @@ function MeetupsPage() {
                 <h2 className="text-lg leading-snug transition-colors group-hover:text-ember">
                   {m.title}
                 </h2>
-                <p className="mt-2 text-sm text-muted-foreground">{m.summary}</p>
+                <p className="mt-2 whitespace-pre-line text-sm text-muted-foreground">
+                  {m.summary}
+                </p>
                 <p className="mt-4 font-display text-xs text-muted-foreground">
                   {m.venue} — {m.city}
                 </p>
@@ -265,7 +267,9 @@ function MeetupsPage() {
                   {formatEventDate(m.event_date)} · {m.city}
                 </p>
                 <h3 className="mt-3 text-base">{m.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{m.summary}</p>
+                <p className="mt-2 whitespace-pre-line text-sm text-muted-foreground">
+                  {m.summary}
+                </p>
               </li>
             ))}
           </ul>
