@@ -202,9 +202,10 @@ function MeetupDetail() {
         {formatEventDate(m.event_date)} · {m.time_label}
       </p>
       <h1 className="mt-4 text-4xl leading-tight">{m.title}</h1>
-      <p className="mt-4 font-display text-sm text-muted-foreground">
-        {m.venue} — {m.city}
+      <p className="mt-4 font-display text-xs tracking-widest text-ember uppercase">
+        {m.venue} · {m.city}
       </p>
+
       {m.status !== "open" && (
         <p className="mt-2 font-display text-xs tracking-widest uppercase text-muted-foreground">
           {statusLabel[m.status] ?? m.status}
