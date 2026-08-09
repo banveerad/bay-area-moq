@@ -176,7 +176,12 @@ const cardTitle = {
   margin: '0 0 8px',
 }
 const cardMeta = { fontSize: '13px', color: '#55575d', margin: '0 0 4px' }
-const cardSummary = { fontSize: '13px', color: '#77797d', margin: '10px 0 0' }
+const cardSummary = {
+  fontSize: '13px',
+  color: '#77797d',
+  margin: '10px 0 0',
+  whiteSpace: 'pre-line' as const,
+}
 const link = { color: '#e85d3a', textDecoration: 'underline' }
 const calSection = { margin: '0 0 24px' }
 const calLabel = {
