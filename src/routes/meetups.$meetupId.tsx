@@ -211,7 +211,9 @@ function MeetupDetail() {
         </p>
       )}
 
-      {m.summary && <p className="mt-8 text-muted-foreground">{m.summary}</p>}
+      {m.summary && (
+        <p className="mt-8 whitespace-pre-line text-muted-foreground">{m.summary}</p>
+      )}
 
       <div className="mt-10 flex flex-wrap items-center gap-3 border-t border-border pt-8">
         {isAuthenticated ? (

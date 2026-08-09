@@ -215,7 +215,9 @@ function Index() {
                 <h3 className="mt-4 text-lg leading-snug transition-colors group-hover:text-ember">
                   {m.title}
                 </h3>
-                <p className="mt-3 text-sm text-muted-foreground">{m.summary}</p>
+                <p className="mt-3 whitespace-pre-line text-sm text-muted-foreground">
+                  {m.summary}
+                </p>
                 <p className="mt-6 font-display text-xs text-muted-foreground">
                   {m.venue} — {m.city}
                 </p>
