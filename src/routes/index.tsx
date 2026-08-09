@@ -159,15 +159,13 @@ function Index() {
             playback and the quality your viewers actually see.
           </p>
           <div className="mt-9">
-            <a
-              href="https://discord.gg/yuW3HM8w"
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              to={isAuthenticated ? "/account" : "/auth"}
               className="inline-flex items-center gap-3 bg-ember px-6 py-3 font-display text-sm text-primary-foreground transition-colors hover:bg-ember-soft"
             >
               Join the community
               <span aria-hidden>→</span>
-            </a>
+            </Link>
           </div>
 
         </div>
