@@ -263,7 +263,7 @@ function AuthPage() {
               <button
                 type="button"
                 onClick={handleReset}
-                className="transition-colors hover:text-foreground"
+                className="cursor-pointer transition-colors hover:text-foreground"
               >
                 Forgot password?
               </button>
