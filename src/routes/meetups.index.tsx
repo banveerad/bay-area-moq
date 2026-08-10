@@ -8,6 +8,8 @@ import { useIsAdmin } from "@/hooks/use-is-admin";
 import { formatEventDate, statusLabel, type MeetupRow } from "@/lib/meetups";
 import { AddToCalendar } from "@/components/add-to-calendar";
 import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
+import { GuestRsvpForm } from "@/components/guest-rsvp-form";
+
 
 export const Route = createFileRoute("/meetups/")({
   head: () => ({
