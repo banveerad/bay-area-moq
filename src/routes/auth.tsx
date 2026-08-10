@@ -243,7 +243,7 @@ function AuthPage() {
             <button
               type="submit"
               disabled={busy || (mode === "signup" && !acceptedTerms)}
-              className="w-full bg-ember px-4 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
+              className="w-full cursor-pointer bg-ember px-4 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {mode === "signin" ? "Sign in" : "Create account"}
             </button>
