@@ -168,7 +168,7 @@ function AuthPage() {
             type="button"
             onClick={handleGoogle}
             disabled={busy}
-            className="mt-6 w-full border border-border bg-surface px-4 py-3 text-sm transition-colors hover:bg-surface-raised disabled:opacity-50"
+            className="mt-6 w-full cursor-pointer border border-border bg-surface px-4 py-3 text-sm transition-colors hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-50"
           >
             Continue with Google
           </button>
