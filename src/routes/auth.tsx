@@ -255,7 +255,7 @@ function AuthPage() {
             <button
               type="button"
               onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-              className="transition-colors hover:text-foreground"
+              className="cursor-pointer transition-colors hover:text-foreground"
             >
               {mode === "signin" ? "Need an account? Sign up" : "Already a member? Sign in"}
             </button>
