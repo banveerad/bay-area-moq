@@ -8,6 +8,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { formatEventDate, statusLabel, type MeetupRow } from "@/lib/meetups";
 import { AddToCalendar } from "@/components/add-to-calendar";
 import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
+import { GuestRsvpForm } from "@/components/guest-rsvp-form";
+
 
 const SITE = "https://moqbayarea.com";
 
