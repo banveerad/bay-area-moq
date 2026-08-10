@@ -229,7 +229,7 @@ function AuthPage() {
                   type="checkbox"
                   checked={acceptedTerms}
                   onChange={(e) => setAcceptedTerms(e.target.checked)}
-                  className="mt-0.5 size-4 shrink-0 accent-ember"
+                  className="mt-0.5 size-4 shrink-0 cursor-pointer accent-ember"
                 />
                 <span>
                   I agree to the{" "}
