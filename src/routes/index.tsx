@@ -9,6 +9,8 @@ import { formatEventDate, type MeetupRow } from "@/lib/meetups";
 import { AddToCalendar } from "@/components/add-to-calendar";
 import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
 import { RotatingWords } from "@/components/rotating-words";
+import { GuestRsvpForm } from "@/components/guest-rsvp-form";
+
 
 
 
