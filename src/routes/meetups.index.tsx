@@ -8,6 +8,8 @@ import { useIsAdmin } from "@/hooks/use-is-admin";
 import { formatEventDate, statusLabel, type MeetupRow } from "@/lib/meetups";
 import { AddToCalendar } from "@/components/add-to-calendar";
 import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
+import { GuestRsvpForm } from "@/components/guest-rsvp-form";
+
 
 export const Route = createFileRoute("/meetups/")({
   head: () => ({
@@ -174,7 +176,7 @@ function MeetupsPage() {
           return (
             <li
               key={m.id}
-              className="group relative grid gap-4 py-8 transition-colors md:grid-cols-[210px_1fr_190px]"
+              className="group relative grid gap-4 py-8 transition-colors md:grid-cols-[210px_1fr_320px]"
             >
               <Link
                 to="/meetups/$meetupId"
@@ -244,13 +246,11 @@ function MeetupsPage() {
                     )}
                   </>
                 ) : (
-                  <Link
-                    to="/auth"
-                    className="mt-3 inline-block border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
-                  >
-                    {full ? "Sign in to join waitlist" : "Sign in to RSVP"}
-                  </Link>
+                  <div className="mt-3">
+                    <GuestRsvpForm meetup={m} full={full} align="right" />
+                  </div>
                 )}
+
               </div>
             </li>
           );

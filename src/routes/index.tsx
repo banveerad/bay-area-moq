@@ -9,6 +9,8 @@ import { formatEventDate, type MeetupRow } from "@/lib/meetups";
 import { AddToCalendar } from "@/components/add-to-calendar";
 import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
 import { RotatingWords } from "@/components/rotating-words";
+import { GuestRsvpForm } from "@/components/guest-rsvp-form";
+
 
 
 
@@ -258,13 +260,9 @@ function Index() {
                       )}
                     </>
                   ) : (
-                    <Link
-                      to="/auth"
-                      className="inline-block border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
-                    >
-                      {full ? "Sign in to join waitlist" : "Sign in to RSVP"}
-                    </Link>
+                    <GuestRsvpForm meetup={m} full={full} />
                   )}
+
                 </div>
               </article>
             );

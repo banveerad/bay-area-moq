@@ -57,9 +57,12 @@ const inputClass =
 type AttendeeRow = {
   id: string;
   meetup_id: string;
-  user_id: string;
+  user_id: string | null;
   status: string;
   created_at: string;
+  guest_name: string | null;
+  guest_email: string | null;
+  guest_linkedin: string | null;
 };
 
 function AdminMeetupsPage() {
@@ -95,7 +98,7 @@ function AdminMeetupsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("rsvps")
-        .select("id, meetup_id, user_id, status, created_at")
+        .select("id, meetup_id, user_id, status, created_at, guest_name, guest_email, guest_linkedin")
         .order("created_at", { ascending: true });
       if (error) throw error;
       return (data ?? []) as AttendeeRow[];
@@ -117,6 +120,9 @@ function AdminMeetupsPage() {
     if (!p) return "Member";
     return [p.display_name || "Member", p.company].filter(Boolean).join(" · ");
   };
+
+  const labelFor = (a: AttendeeRow) =>
+    a.user_id ? nameFor(a.user_id) : `${a.guest_name ?? "Guest"} · ${a.guest_email ?? ""} (guest)`;
 
   const attendeesFor = (meetupId: string, status: string) =>
     (attendeesQuery.data ?? []).filter((a) => a.meetup_id === meetupId && a.status === status);
@@ -200,12 +206,12 @@ function AdminMeetupsPage() {
       id: string;
       status: "going" | "waitlist";
       meetupId: string;
-      userId: string;
+      userId: string | null;
     }) => {
       const { error } = await supabase.from("rsvps").update({ status }).eq("id", id);
       if (error) throw error;
       try {
-        await notify({ data: { meetupId, targetUserId: userId, action: status } });
+        if (userId) await notify({ data: { meetupId, targetUserId: userId, action: status } });
       } catch (err) {
         console.error(err);
       }
@@ -226,12 +232,12 @@ function AdminMeetupsPage() {
     }: {
       id: string;
       meetupId: string;
-      userId: string;
+      userId: string | null;
     }) => {
       const { error } = await supabase.from("rsvps").delete().eq("id", id);
       if (error) throw error;
       try {
-        await notify({ data: { meetupId, targetUserId: userId, action: "removed" } });
+        if (userId) await notify({ data: { meetupId, targetUserId: userId, action: "removed" } });
       } catch (err) {
         console.error(err);
       }
@@ -553,13 +559,29 @@ function AdminMeetupsPage() {
                       )}
                       {goingList.map((a) => (
                         <li key={a.id} className="flex flex-wrap items-center justify-between gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setProfileUserId(a.user_id)}
-                            className="text-left text-muted-foreground underline decoration-border underline-offset-4 hover:text-ember"
-                          >
-                            {nameFor(a.user_id)}
-                          </button>
+                          {a.user_id ? (
+                            <button
+                              type="button"
+                              onClick={() => setProfileUserId(a.user_id)}
+                              className="text-left text-muted-foreground underline decoration-border underline-offset-4 hover:text-ember"
+                            >
+                              {nameFor(a.user_id)}
+                            </button>
+                          ) : (
+                            <span className="text-left text-muted-foreground">
+                              {labelFor(a)}
+                              {a.guest_linkedin && (
+                                <a
+                                  href={a.guest_linkedin}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="ml-2 text-ember hover:underline"
+                                >
+                                  LinkedIn
+                                </a>
+                              )}
+                            </span>
+                          )}
                           <span className="flex gap-2">
                             <button
                               type="button"
@@ -573,7 +595,7 @@ function AdminMeetupsPage() {
                               type="button"
                               disabled={removeRsvp.isPending}
                               onClick={() => {
-                                if (confirm(`Remove ${nameFor(a.user_id)}'s RSVP?`))
+                                if (confirm(`Remove ${labelFor(a)}'s RSVP?`))
                                   removeRsvp.mutate({ id: a.id, meetupId: m.id, userId: a.user_id });
                               }}
                               className="border border-destructive px-2 py-1 text-xs uppercase tracking-wider text-destructive hover:bg-destructive hover:text-background disabled:opacity-50"
@@ -595,13 +617,29 @@ function AdminMeetupsPage() {
                       )}
                       {waitList.map((a, i) => (
                         <li key={a.id} className="flex flex-wrap items-center justify-between gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setProfileUserId(a.user_id)}
-                            className="text-left text-muted-foreground underline decoration-border underline-offset-4 hover:text-ember"
-                          >
-                            {i + 1}. {nameFor(a.user_id)}
-                          </button>
+                          {a.user_id ? (
+                            <button
+                              type="button"
+                              onClick={() => setProfileUserId(a.user_id)}
+                              className="text-left text-muted-foreground underline decoration-border underline-offset-4 hover:text-ember"
+                            >
+                              {i + 1}. {nameFor(a.user_id)}
+                            </button>
+                          ) : (
+                            <span className="text-left text-muted-foreground">
+                              {i + 1}. {labelFor(a)}
+                              {a.guest_linkedin && (
+                                <a
+                                  href={a.guest_linkedin}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="ml-2 text-ember hover:underline"
+                                >
+                                  LinkedIn
+                                </a>
+                              )}
+                            </span>
+                          )}
                           <span className="flex gap-2">
                             <button
                               type="button"
@@ -616,7 +654,7 @@ function AdminMeetupsPage() {
                               type="button"
                               disabled={removeRsvp.isPending}
                               onClick={() => {
-                                if (confirm(`Remove ${nameFor(a.user_id)} from the waitlist?`))
+                                if (confirm(`Remove ${labelFor(a)} from the waitlist?`))
                                   removeRsvp.mutate({ id: a.id, meetupId: m.id, userId: a.user_id });
                               }}
                               className="border border-destructive px-2 py-1 text-xs uppercase tracking-wider text-destructive hover:bg-destructive hover:text-background disabled:opacity-50"
