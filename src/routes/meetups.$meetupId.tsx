@@ -237,13 +237,18 @@ function MeetupDetail() {
                 : "RSVP"}
           </button>
         ) : (
-          <Link
-            to="/auth"
-            className="border border-ember px-5 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
-          >
-            {full ? "Sign in to join waitlist" : "Sign in to RSVP"}
-          </Link>
+          <div className="w-full max-w-md">
+            <GuestRsvpForm meetup={m} full={full} />
+            <p className="mt-3 text-xs text-muted-foreground">
+              Or{" "}
+              <Link to="/auth" className="text-ember hover:underline">
+                sign in
+              </Link>{" "}
+              to manage your RSVPs in one place.
+            </p>
+          </div>
         )}
+
 
         {mine?.status === "going" && <AddToCalendar event={m} />}
 
