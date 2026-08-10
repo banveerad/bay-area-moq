@@ -126,7 +126,9 @@ export function GuestRsvpForm({
         onChange={(e) => setLinkedin(e.target.value)}
         maxLength={255}
       />
-      <Turnstile onVerify={setToken} resetKey={resetKey} />
+      <div className="max-w-full origin-left scale-[0.92] overflow-hidden">
+        <Turnstile onVerify={setToken} resetKey={resetKey} />
+      </div>
       <div className="flex flex-wrap gap-3">
         <button
           type="submit"

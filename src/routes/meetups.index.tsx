@@ -176,7 +176,7 @@ function MeetupsPage() {
           return (
             <li
               key={m.id}
-              className="group relative grid gap-4 py-8 transition-colors md:grid-cols-[210px_1fr_190px]"
+              className="group relative grid gap-4 py-8 transition-colors md:grid-cols-[210px_1fr_320px]"
             >
               <Link
                 to="/meetups/$meetupId"
