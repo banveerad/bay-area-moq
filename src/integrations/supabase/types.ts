@@ -163,24 +163,33 @@ export type Database = {
       rsvps: {
         Row: {
           created_at: string
+          guest_email: string | null
+          guest_linkedin: string | null
+          guest_name: string | null
           id: string
           meetup_id: string
           status: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
+          guest_email?: string | null
+          guest_linkedin?: string | null
+          guest_name?: string | null
           id?: string
           meetup_id: string
           status?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
+          guest_email?: string | null
+          guest_linkedin?: string | null
+          guest_name?: string | null
           id?: string
           meetup_id?: string
           status?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
