@@ -168,7 +168,7 @@ function AuthPage() {
             type="button"
             onClick={handleGoogle}
             disabled={busy}
-            className="mt-6 w-full border border-border bg-surface px-4 py-3 text-sm transition-colors hover:bg-surface-raised disabled:opacity-50"
+            className="mt-6 w-full cursor-pointer border border-border bg-surface px-4 py-3 text-sm transition-colors hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-50"
           >
             Continue with Google
           </button>
@@ -229,7 +229,7 @@ function AuthPage() {
                   type="checkbox"
                   checked={acceptedTerms}
                   onChange={(e) => setAcceptedTerms(e.target.checked)}
-                  className="mt-0.5 size-4 shrink-0 accent-ember"
+                  className="mt-0.5 size-4 shrink-0 cursor-pointer accent-ember"
                 />
                 <span>
                   I agree to the{" "}
@@ -243,7 +243,7 @@ function AuthPage() {
             <button
               type="submit"
               disabled={busy || (mode === "signup" && !acceptedTerms)}
-              className="w-full bg-ember px-4 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
+              className="w-full cursor-pointer bg-ember px-4 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {mode === "signin" ? "Sign in" : "Create account"}
             </button>
@@ -255,7 +255,7 @@ function AuthPage() {
             <button
               type="button"
               onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-              className="transition-colors hover:text-foreground"
+              className="cursor-pointer transition-colors hover:text-foreground"
             >
               {mode === "signin" ? "Need an account? Sign up" : "Already a member? Sign in"}
             </button>
@@ -263,7 +263,7 @@ function AuthPage() {
               <button
                 type="button"
                 onClick={handleReset}
-                className="transition-colors hover:text-foreground"
+                className="cursor-pointer transition-colors hover:text-foreground"
               >
                 Forgot password?
               </button>
