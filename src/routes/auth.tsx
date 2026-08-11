@@ -115,6 +115,7 @@ function AuthPage() {
       return;
     }
     setBusy(true);
+    setNeedsConfirm(false);
     try {
 
 
@@ -141,10 +142,13 @@ function AuthPage() {
         if (error) throw error;
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Something went wrong");
+      const message = error instanceof Error ? error.message : "Something went wrong";
+      if (/not confirmed|confirm your email/i.test(message)) setNeedsConfirm(true);
+      toast.error(message);
     } finally {
       setBusy(false);
     }
+
   }
 
   async function handleGoogle() {
