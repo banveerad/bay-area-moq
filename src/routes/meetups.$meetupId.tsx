@@ -8,8 +8,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { formatEventDate, statusLabel, type MeetupRow } from "@/lib/meetups";
 import { AddToCalendar } from "@/components/add-to-calendar";
 import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
-import { GuestRsvpForm } from "@/components/guest-rsvp-form";
-
 
 const SITE = "https://moqbayarea.com";
 
@@ -239,12 +237,13 @@ function MeetupDetail() {
                 : "RSVP"}
           </button>
         ) : (
-          <div className="w-full max-w-md">
-            <GuestRsvpForm meetup={m} full={full} />
-          </div>
-
+          <Link
+            to="/auth"
+            className="border border-ember px-5 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
+          >
+            {full ? "Sign in to join waitlist" : "Sign in to RSVP"}
+          </Link>
         )}
-
 
         {mine?.status === "going" && <AddToCalendar event={m} />}
 
