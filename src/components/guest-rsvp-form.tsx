@@ -38,8 +38,10 @@ export function GuestRsvpForm({
       if (name.trim().length < 2) throw new Error("Please enter your name.");
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
         throw new Error("Please enter a valid email address.");
+      if (!agreed)
+        throw new Error("Please accept the terms and conditions.");
       if (!token) throw new Error("Please complete the captcha.");
-      return submit({
+
         data: {
           meetupId: meetup.id,
           name: name.trim(),
