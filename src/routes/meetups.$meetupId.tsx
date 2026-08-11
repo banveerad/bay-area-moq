@@ -241,14 +241,8 @@ function MeetupDetail() {
         ) : (
           <div className="w-full max-w-md">
             <GuestRsvpForm meetup={m} full={full} />
-            <p className="mt-3 text-xs text-muted-foreground">
-              Or{" "}
-              <Link to="/auth" className="text-ember hover:underline">
-                sign in
-              </Link>{" "}
-              to manage your RSVPs in one place.
-            </p>
           </div>
+
         )}
 
 
