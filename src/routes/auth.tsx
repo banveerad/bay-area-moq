@@ -53,6 +53,46 @@ function AuthPage() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
+  const [needsConfirm, setNeedsConfirm] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = window.setInterval(() => {
+      setCooldown((v) => (v <= 1 ? 0 : v - 1));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [cooldown]);
+
+  async function handleResend() {
+    const parsedEmail = z.string().trim().email().safeParse(email);
+    if (!parsedEmail.success) {
+      toast.error("Enter your email address first");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: parsedEmail.data,
+        options: { emailRedirectTo: window.location.origin },
+      });
+      if (error) {
+        const status = (error as { status?: number }).status;
+        if (status === 429 || /rate limit/i.test(error.message)) {
+          toast.error("Too many requests — please try again in a minute.");
+        } else {
+          toast.error(error.message);
+        }
+        return;
+      }
+      setCooldown(60);
+      toast.success("Confirmation email sent again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
 
 
   const destination = safePath(search.redirect);
@@ -75,6 +115,7 @@ function AuthPage() {
       return;
     }
     setBusy(true);
+    setNeedsConfirm(false);
     try {
 
 
@@ -101,10 +142,13 @@ function AuthPage() {
         if (error) throw error;
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Something went wrong");
+      const message = error instanceof Error ? error.message : "Something went wrong";
+      if (/not confirmed|confirm your email/i.test(message)) setNeedsConfirm(true);
+      toast.error(message);
     } finally {
       setBusy(false);
     }
+
   }
 
   async function handleGoogle() {
@@ -152,7 +196,16 @@ function AuthPage() {
         <div className="mt-10 border border-border bg-surface p-6 text-sm text-muted-foreground">
           We sent a confirmation link to <span className="text-foreground">{email}</span>. Click it
           to finish creating your account.
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={busy || cooldown > 0}
+            className="mt-5 w-full cursor-pointer border border-border px-4 py-2.5 text-sm transition-colors hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {cooldown > 0 ? `Resend available in ${cooldown}s` : "Resend confirmation email"}
+          </button>
         </div>
+
       ) : (
         <>
           <p className="mt-8 border border-border bg-surface px-4 py-3 text-xs leading-relaxed text-muted-foreground">
@@ -248,6 +301,23 @@ function AuthPage() {
               {mode === "signin" ? "Sign in" : "Create account"}
             </button>
           </form>
+
+          {needsConfirm && (
+            <p className="mt-5 border border-border bg-surface px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+              This account hasn't been confirmed yet.{" "}
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={busy || cooldown > 0}
+                className="cursor-pointer text-ember hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {cooldown > 0
+                  ? `Resend available in ${cooldown}s`
+                  : "Resend the confirmation email"}
+              </button>
+            </p>
+          )}
+
 
 
 
