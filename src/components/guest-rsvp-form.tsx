@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
+
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Turnstile } from "@/components/turnstile";
@@ -81,15 +83,26 @@ export function GuestRsvpForm({
 
   if (!open) {
     return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="cursor-pointer border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
+      <div
+        className={`flex flex-wrap gap-3 ${align === "right" ? "md:justify-end" : ""}`}
       >
-        {full ? "Join waitlist" : "RSVP"}
-      </button>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="cursor-pointer border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
+        >
+          {full ? "Join waitlist with email" : "RSVP with email"}
+        </button>
+        <Link
+          to="/auth"
+          className="cursor-pointer border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground transition-colors hover:border-ember hover:text-ember"
+        >
+          Log in to RSVP
+        </Link>
+      </div>
     );
   }
+
 
   return (
     <form
