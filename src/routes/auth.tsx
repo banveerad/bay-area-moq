@@ -53,6 +53,46 @@ function AuthPage() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
+  const [needsConfirm, setNeedsConfirm] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = window.setInterval(() => {
+      setCooldown((v) => (v <= 1 ? 0 : v - 1));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [cooldown]);
+
+  async function handleResend() {
+    const parsedEmail = z.string().trim().email().safeParse(email);
+    if (!parsedEmail.success) {
+      toast.error("Enter your email address first");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: parsedEmail.data,
+        options: { emailRedirectTo: window.location.origin },
+      });
+      if (error) {
+        const status = (error as { status?: number }).status;
+        if (status === 429 || /rate limit/i.test(error.message)) {
+          toast.error("Too many requests — please try again in a minute.");
+        } else {
+          toast.error(error.message);
+        }
+        return;
+      }
+      setCooldown(60);
+      toast.success("Confirmation email sent again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
 
 
   const destination = safePath(search.redirect);
