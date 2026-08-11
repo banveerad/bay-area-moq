@@ -302,6 +302,23 @@ function AuthPage() {
             </button>
           </form>
 
+          {needsConfirm && (
+            <p className="mt-5 border border-border bg-surface px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+              This account hasn't been confirmed yet.{" "}
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={busy || cooldown > 0}
+                className="cursor-pointer text-ember hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {cooldown > 0
+                  ? `Resend available in ${cooldown}s`
+                  : "Resend the confirmation email"}
+              </button>
+            </p>
+          )}
+
+
 
 
           <div className="mt-6 flex flex-wrap justify-between gap-3 text-sm text-muted-foreground">
