@@ -144,13 +144,30 @@ export function GuestRsvpForm({
         onChange={(e) => setLinkedin(e.target.value)}
         maxLength={255}
       />
+      <label className="flex cursor-pointer items-start gap-2 text-xs text-muted-foreground">
+        <input
+          type="checkbox"
+          checked={agreed}
+          onChange={(e) => setAgreed(e.target.checked)}
+          className="mt-0.5 cursor-pointer accent-ember"
+          required
+        />
+        <span>
+          I agree to the{" "}
+          <Link to="/terms" className="cursor-pointer text-ember underline">
+            terms and conditions
+          </Link>
+          .
+        </span>
+      </label>
       <div className="max-w-full origin-left scale-[0.92] overflow-hidden">
         <Turnstile onVerify={setToken} resetKey={resetKey} />
       </div>
       <div className="flex flex-wrap gap-3">
         <button
           type="submit"
-          disabled={rsvp.isPending || !token}
+          disabled={rsvp.isPending || !token || !agreed}
+
           className="cursor-pointer border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background disabled:cursor-not-allowed disabled:opacity-50"
         >
           {rsvp.isPending ? "Sending…" : full ? "Join waitlist" : "Confirm RSVP"}
