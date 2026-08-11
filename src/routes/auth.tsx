@@ -196,7 +196,16 @@ function AuthPage() {
         <div className="mt-10 border border-border bg-surface p-6 text-sm text-muted-foreground">
           We sent a confirmation link to <span className="text-foreground">{email}</span>. Click it
           to finish creating your account.
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={busy || cooldown > 0}
+            className="mt-5 w-full cursor-pointer border border-border px-4 py-2.5 text-sm transition-colors hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {cooldown > 0 ? `Resend available in ${cooldown}s` : "Resend confirmation email"}
+          </button>
         </div>
+
       ) : (
         <>
           <p className="mt-8 border border-border bg-surface px-4 py-3 text-xs leading-relaxed text-muted-foreground">
