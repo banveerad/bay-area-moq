@@ -26,8 +26,10 @@ export function GuestRsvpForm({
   const [email, setEmail] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [token, setToken] = useState<string | null>(null);
+  const [agreed, setAgreed] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const [done, setDone] = useState<"going" | "waitlist" | null>(null);
+
 
   const submit = useServerFn(guestRsvp);
 
