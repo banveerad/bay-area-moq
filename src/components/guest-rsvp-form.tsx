@@ -41,8 +41,9 @@ export function GuestRsvpForm({
       if (!agreed)
         throw new Error("Please accept the terms and conditions.");
       if (!token) throw new Error("Please complete the captcha.");
-
+      return submit({
         data: {
+
           meetupId: meetup.id,
           name: name.trim(),
           email: email.trim(),
