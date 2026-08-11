@@ -1,26 +1,75 @@
-# Bay Area Streamers
+# moq+more://bayarea
 
-Want to create a website dedicated to bringing Media Over Quic, video streaming enthusist in the bay area together.
+A community site for Bay Area video streaming engineers — Media Over QUIC (MoQ), live streaming, VOD, encoding, packaging, CDNs, ads and ad insertion.
 
-This project was built with [Lovable](https://lovable.dev).
+**Live**: https://moqbayarea.com · **Discord**: https://discord.gg/yuW3HM8w
 
-**Live app**: https://bay-area-moq.lovable.app
+## What the site does
 
-## Build with Lovable
+- **Meetups** — upcoming and past events, each with its own shareable URL, SEO metadata and JSON-LD.
+- **RSVPs & waitlist** — logged-in members RSVP; once a meetup hits capacity, further sign-ups roll into a waitlist and get promoted automatically when a spot frees up.
+- **Calendar + email** — RSVP confirmation emails plus one-click add to Google, Outlook or Apple Calendar.
+- **Announcements** — organisers can email a new meetup to every member who opted in to notifications.
+- **Resources** — a curated, admin-editable list of MoQ and video-tech links, specs and talks.
+- **Admin tools** — an organiser dashboard for meetups (create/edit/delete, move attendees between going/waitlist), members, and resources.
+- **Per-event managers** — an admin can grant someone rights to manage a single meetup and nothing else.
+- **Contact** — inquiry form protected by Cloudflare Turnstile that emails the organisers directly.
+- **Auth** — email/password and Google sign-in, with terms acknowledgement.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/a2634cf2-8c8e-426f-8bfd-88db5462dddd).
+## Tech stack
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+- **TanStack Start** (React 19, TanStack Router + Query) on Vite 7, deployed to an edge runtime
+- **Tailwind CSS v4** with a semantic token design system ("charcoal & ember")
+- **shadcn/ui** + Radix primitives, `lucide-react`, `sonner` for toasts
+- **Supabase** (Postgres + RLS, auth, storage) via Lovable Cloud
+- **React Email** templates for transactional mail, sent from `notify.moqbayarea.com`
+- Server logic in `createServerFn` server functions; public webhooks under `src/routes/api/public/*`
 
-## Development
+## Project layout
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+```text
+src/
+  routes/            file-based routes (incl. _authenticated/ and admin/)
+  components/        UI + site chrome (header, hero, cards)
+  lib/               server functions, *.server.ts helpers, email templates
+  integrations/      generated backend client and types
+  data/              static content
+supabase/migrations/ database schema, RLS policies, triggers
+```
+
+## Local development
+
+Requires Node.js 20+.
 
 ```sh
 git clone <this-repository-url>
 cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+The app runs at http://localhost:8080.
+
+Environment variables live in `.env` and point at the hosted backend (publishable keys only — every table is protected by row-level security). To run fully independently, create your own Supabase project, apply the migrations in `supabase/migrations/`, and set:
+
+```sh
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_PUBLISHABLE_KEY=...
+VITE_SUPABASE_PROJECT_ID=...
+```
+
+Server-side secrets (email sending, Turnstile) are configured in the hosting environment and are never committed.
+
+Useful scripts: `npm run build`, `npm run lint`, `npm run format`.
+
+## Contributing
+
+Issues and pull requests are welcome — bug fixes, accessibility improvements, resource additions and copy edits especially. Keep changes focused, use the existing design tokens instead of hardcoded colours, and describe what you changed and why.
+
+## License
+
+[MIT](./LICENSE)
+
+---
+
+Built and maintained with [Lovable](https://lovable.dev); changes in the editor sync to this repository.
