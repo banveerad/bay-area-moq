@@ -154,7 +154,7 @@ function MeetupsPage() {
             moment the next date is locked in.
           </p>
           <a
-            href="https://discord.gg/yuW3HM8w"
+            href="https://discord.gg/ZBNyHkkX"
             target="_blank"
             rel="noreferrer"
             className="mt-6 inline-block border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background"
