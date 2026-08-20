@@ -7,11 +7,13 @@ export async function announceMeetup(meetupId: string) {
 
   const { data: meetup } = await supabaseAdmin
     .from('meetups')
-    .select('id, title, event_date, time_label, venue, city, summary, capacity')
+    .select('id, title, event_date, time_label, venue, city, summary, capacity, is_draft')
     .eq('id', meetupId)
     .maybeSingle()
 
   if (!meetup) throw new Error('Meetup not found')
+  if (meetup.is_draft) throw new Error('Mark the meetup as ready before notifying members')
+
 
   const dateLabel = formatEventDate(meetup.event_date)
   const { google, outlook } = calendarLinks(meetup)
