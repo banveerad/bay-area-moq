@@ -475,9 +475,15 @@ function AdminMeetupsPage() {
             <li key={m.id} className="py-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="font-display text-xs tracking-widest uppercase text-ember">
+                  <p className="flex items-center gap-2 font-display text-xs tracking-widest uppercase text-ember">
                     {formatEventDate(m.event_date)} · {m.status}
+                    {m.is_draft && (
+                      <span className="border border-border px-2 py-0.5 text-muted-foreground">
+                        Draft — hidden
+                      </span>
+                    )}
                   </p>
+
                   <h3 className="mt-2 text-base">{m.title}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {m.venue} — {m.city}
