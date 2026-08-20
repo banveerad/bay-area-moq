@@ -507,15 +507,13 @@ function AdminMeetupsPage() {
                     type="button"
                     disabled={sendAnnouncement.isPending}
                     onClick={() => {
-                      if (
-                        confirm(
-                          m.announced_at
-                            ? `You already announced "${m.title}". Send the details again to members who opted in?`
-                            : `Email "${m.title}" details to all members who opted in to new-meetup notifications?`,
-                        )
-                      )
+                      const answer = prompt(
+                        `This emails "${m.title}" to every member who opted in to new-meetup notifications.\n\nType SEND to confirm.`,
+                      );
+                      if (answer?.trim().toUpperCase() === "SEND")
                         sendAnnouncement.mutate(m.id);
                     }}
+
                     className="border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background disabled:opacity-50"
                   >
                     {sendAnnouncement.isPending && sendAnnouncement.variables === m.id
