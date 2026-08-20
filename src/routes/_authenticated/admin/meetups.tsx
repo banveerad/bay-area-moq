@@ -80,7 +80,7 @@ function AdminMeetupsPage() {
       const { data, error } = await supabase
         .from("meetups")
         .select(
-          "id, title, event_date, time_label, venue, city, summary, status, rsvp_count, waitlist_count, capacity, announced_at",
+          "id, title, event_date, time_label, venue, city, summary, status, rsvp_count, waitlist_count, capacity, announced_at, is_draft",
         )
 
         .order("event_date", { ascending: true });
