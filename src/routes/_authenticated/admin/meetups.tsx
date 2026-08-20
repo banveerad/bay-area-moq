@@ -525,7 +525,16 @@ function AdminMeetupsPage() {
                   </button>
                   <button
                     type="button"
-                    disabled={sendAnnouncement.isPending}
+                    disabled={setDraft.isPending}
+                    onClick={() => setDraft.mutate({ id: m.id, is_draft: !m.is_draft })}
+                    className="border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background disabled:opacity-50"
+                  >
+                    {m.is_draft ? "▲ Mark as ready" : "▼ Move to draft"}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={sendAnnouncement.isPending || m.is_draft}
+                    title={m.is_draft ? "Mark the meetup as ready before notifying members" : undefined}
                     onClick={() => {
                       const answer = prompt(
                         `This emails "${m.title}" to every member who opted in to new-meetup notifications.\n\nType SEND to confirm.`,
@@ -542,6 +551,7 @@ function AdminMeetupsPage() {
                         ? "↻ Resend notification"
                         : "✉ Send notification"}
                   </button>
+
 
                   {isAdmin && (
                   <button
