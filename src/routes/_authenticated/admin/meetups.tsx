@@ -285,7 +285,21 @@ function AdminMeetupsPage() {
     onError: (error: Error) => toast.error(error.message),
   });
 
+  const setDraft = useMutation({
+    mutationFn: async ({ id, is_draft }: { id: string; is_draft: boolean }) => {
+      const { error } = await supabase.from("meetups").update({ is_draft }).eq("id", id);
+      if (error) throw error;
+      return is_draft;
+    },
+    onSuccess: (is_draft) => {
+      void queryClient.invalidateQueries({ queryKey: ["meetups"] });
+      toast.success(is_draft ? "Moved back to draft." : "Meetup is live.");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
   const announce = useServerFn(announceMeetup);
+
 
   const sendAnnouncement = useMutation({
     mutationFn: async (meetupId: string) => announce({ data: { meetupId } }),
