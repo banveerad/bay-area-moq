@@ -80,7 +80,7 @@ function AdminMeetupsPage() {
       const { data, error } = await supabase
         .from("meetups")
         .select(
-          "id, title, event_date, time_label, venue, city, summary, status, rsvp_count, waitlist_count, capacity, announced_at",
+          "id, title, event_date, time_label, venue, city, summary, status, rsvp_count, waitlist_count, capacity, announced_at, is_draft",
         )
 
         .order("event_date", { ascending: true });
@@ -285,7 +285,21 @@ function AdminMeetupsPage() {
     onError: (error: Error) => toast.error(error.message),
   });
 
+  const setDraft = useMutation({
+    mutationFn: async ({ id, is_draft }: { id: string; is_draft: boolean }) => {
+      const { error } = await supabase.from("meetups").update({ is_draft }).eq("id", id);
+      if (error) throw error;
+      return is_draft;
+    },
+    onSuccess: (is_draft) => {
+      void queryClient.invalidateQueries({ queryKey: ["meetups"] });
+      toast.success(is_draft ? "Moved back to draft." : "Meetup is live.");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
   const announce = useServerFn(announceMeetup);
+
 
   const sendAnnouncement = useMutation({
     mutationFn: async (meetupId: string) => announce({ data: { meetupId } }),
@@ -461,9 +475,15 @@ function AdminMeetupsPage() {
             <li key={m.id} className="py-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="font-display text-xs tracking-widest uppercase text-ember">
+                  <p className="flex items-center gap-2 font-display text-xs tracking-widest uppercase text-ember">
                     {formatEventDate(m.event_date)} · {m.status}
+                    {m.is_draft && (
+                      <span className="border border-border px-2 py-0.5 text-muted-foreground">
+                        Draft — hidden
+                      </span>
+                    )}
                   </p>
+
                   <h3 className="mt-2 text-base">{m.title}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {m.venue} — {m.city}
@@ -505,7 +525,16 @@ function AdminMeetupsPage() {
                   </button>
                   <button
                     type="button"
-                    disabled={sendAnnouncement.isPending}
+                    disabled={setDraft.isPending}
+                    onClick={() => setDraft.mutate({ id: m.id, is_draft: !m.is_draft })}
+                    className="border border-ember px-4 py-2 font-display text-xs tracking-widest uppercase text-ember transition-colors hover:bg-ember hover:text-background disabled:opacity-50"
+                  >
+                    {m.is_draft ? "▲ Mark as ready" : "▼ Move to draft"}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={sendAnnouncement.isPending || m.is_draft}
+                    title={m.is_draft ? "Mark the meetup as ready before notifying members" : undefined}
                     onClick={() => {
                       const answer = prompt(
                         `This emails "${m.title}" to every member who opted in to new-meetup notifications.\n\nType SEND to confirm.`,
@@ -522,6 +551,7 @@ function AdminMeetupsPage() {
                         ? "↻ Resend notification"
                         : "✉ Send notification"}
                   </button>
+
 
                   {isAdmin && (
                   <button

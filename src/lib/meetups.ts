@@ -11,6 +11,8 @@ export type MeetupRow = {
   waitlist_count: number;
   capacity: number | null;
   announced_at?: string | null;
+  is_draft?: boolean;
+
 
 
 
