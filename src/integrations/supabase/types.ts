@@ -54,6 +54,7 @@ export type Database = {
           created_at: string
           event_date: string
           id: string
+          is_draft: boolean
           rsvp_count: number
           status: string
           summary: string
@@ -70,6 +71,7 @@ export type Database = {
           created_at?: string
           event_date: string
           id?: string
+          is_draft?: boolean
           rsvp_count?: number
           status?: string
           summary?: string
@@ -86,6 +88,7 @@ export type Database = {
           created_at?: string
           event_date?: string
           id?: string
+          is_draft?: boolean
           rsvp_count?: number
           status?: string
           summary?: string
