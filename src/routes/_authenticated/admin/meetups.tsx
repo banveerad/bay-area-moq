@@ -495,8 +495,9 @@ function AdminMeetupsPage() {
           const full = m.capacity != null && goingList.length >= m.capacity;
           return (
             <li key={m.id} className="py-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+              <div className="flex flex-col gap-4">
+                <div className="min-w-0">
+
                   <p className="flex items-center gap-2 font-display text-xs tracking-widest uppercase text-ember">
                     {formatEventDate(m.event_date)} · {m.status}
                     {m.is_draft && (
@@ -516,7 +517,7 @@ function AdminMeetupsPage() {
                     waitlisted
                   </p>
                 </div>
-                <div className="flex shrink-0 flex-wrap gap-3">
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
                   <button
                     type="button"
                     onClick={() => setOpenList(expanded ? null : m.id)}
