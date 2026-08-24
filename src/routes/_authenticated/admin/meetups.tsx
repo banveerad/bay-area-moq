@@ -8,6 +8,7 @@ import { useMeetupAccess } from "@/hooks/use-meetup-access";
 import { formatEventDate, type MeetupRow } from "@/lib/meetups";
 import { notifyRsvpChange } from "@/lib/rsvp-notify.functions";
 import { announceMeetup } from "@/lib/meetup-announce.functions";
+import { messageAttendees } from "@/lib/meetup-message.functions";
 
 import { MemberProfileDialog } from "@/components/member-profile-dialog";
 
@@ -72,6 +73,9 @@ function AdminMeetupsPage() {
   const [openList, setOpenList] = useState<string | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [profileUserId, setProfileUserId] = useState<string | null>(null);
+  const [messageMeetupId, setMessageMeetupId] = useState<string | null>(null);
+  const [messageBody, setMessageBody] = useState("");
+  const [messageAudience, setMessageAudience] = useState<"going" | "waitlist" | "all">("going");
 
 
   const meetupsQuery = useQuery({
@@ -294,6 +298,24 @@ function AdminMeetupsPage() {
     onSuccess: (is_draft) => {
       void queryClient.invalidateQueries({ queryKey: ["meetups"] });
       toast.success(is_draft ? "Moved back to draft." : "Meetup is live.");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const sendMessageFn = useServerFn(messageAttendees);
+
+  const sendMessage = useMutation({
+    mutationFn: async (meetupId: string) =>
+      sendMessageFn({
+        data: { meetupId, message: messageBody.trim(), audience: messageAudience },
+      }),
+    onSuccess: (result) => {
+      toast.success(
+        `Message sent to ${result.sent} member${result.sent === 1 ? "" : "s"}.` +
+          (result.skipped ? ` ${result.skipped} skipped.` : ""),
+      );
+      setMessageMeetupId(null);
+      setMessageBody("");
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -551,6 +573,16 @@ function AdminMeetupsPage() {
                         ? "↻ Resend notification"
                         : "✉ Send notification"}
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMessageMeetupId(messageMeetupId === m.id ? null : m.id);
+                      setMessageBody("");
+                    }}
+                    className="border border-border px-4 py-2 font-display text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground"
+                  >
+                    {messageMeetupId === m.id ? "Close message" : "✎ Message attendees"}
+                  </button>
 
 
                   {isAdmin && (
@@ -567,6 +599,61 @@ function AdminMeetupsPage() {
                   )}
                 </div>
               </div>
+
+              {messageMeetupId === m.id && (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (messageBody.trim().length < 5) {
+                      toast.error("Write a message of at least 5 characters.");
+                      return;
+                    }
+                    sendMessage.mutate(m.id);
+                  }}
+                  className="mt-5 space-y-4 border border-border bg-surface p-5"
+                >
+                  <p className="font-display text-xs tracking-widest uppercase text-ember">
+                    Message attendees
+                  </p>
+                  <label className="block text-sm text-muted-foreground">
+                    Send to
+                    <select
+                      value={messageAudience}
+                      onChange={(e) =>
+                        setMessageAudience(e.target.value as "going" | "waitlist" | "all")
+                      }
+                      className={`mt-1 ${inputClass}`}
+                    >
+                      <option value="going">Going ({goingList.length})</option>
+                      <option value="waitlist">Waitlist ({waitList.length})</option>
+                      <option value="all">
+                        Everyone ({goingList.length + waitList.length})
+                      </option>
+                    </select>
+                  </label>
+                  <label className="block text-sm text-muted-foreground">
+                    Message
+                    <textarea
+                      value={messageBody}
+                      onChange={(e) => setMessageBody(e.target.value)}
+                      rows={5}
+                      placeholder="Doors open at 6:15, badge pickup is on the 2nd floor…"
+                      className={`mt-1 ${inputClass}`}
+                    />
+                  </label>
+                  <p className="text-xs text-muted-foreground">
+                    Line breaks are kept. The meetup title, date and venue are added
+                    automatically.
+                  </p>
+                  <button
+                    type="submit"
+                    disabled={sendMessage.isPending}
+                    className="bg-ember px-5 py-3 font-display text-xs tracking-widest uppercase text-background transition-opacity hover:opacity-90 disabled:opacity-50"
+                  >
+                    {sendMessage.isPending ? "Sending…" : "Send message"}
+                  </button>
+                </form>
+              )}
 
               {expanded && (
                 <div className="mt-5 grid gap-6 border border-border bg-surface p-5 sm:grid-cols-2">
