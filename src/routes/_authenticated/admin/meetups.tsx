@@ -517,7 +517,7 @@ function AdminMeetupsPage() {
                     waitlisted
                   </p>
                 </div>
-                <div className="flex shrink-0 flex-wrap gap-3">
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
                   <button
                     type="button"
                     onClick={() => setOpenList(expanded ? null : m.id)}
