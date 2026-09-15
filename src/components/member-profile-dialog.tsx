@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatEventDate } from "@/lib/meetups";
@@ -9,6 +10,7 @@ type Props = {
 };
 
 export function MemberProfileDialog({ userId, onClose }: Props) {
+  const [copied, setCopied] = useState(false);
   const profileQuery = useQuery({
     queryKey: ["admin-member", userId],
     enabled: Boolean(userId),
@@ -82,12 +84,30 @@ export function MemberProfileDialog({ userId, onClose }: Props) {
               {profileQuery.isLoading ? "Loading…" : profile?.display_name || "Member"}
             </h2>
             {emailQuery.data && (
-              <a
-                href={`mailto:${emailQuery.data}`}
-                className="mt-1 block text-sm text-muted-foreground underline decoration-border underline-offset-4 hover:text-ember"
-              >
-                {emailQuery.data}
-              </a>
+              <div className="mt-1 flex items-center gap-2">
+                <a
+                  href={`mailto:${emailQuery.data}`}
+                  className="text-sm text-muted-foreground underline decoration-border underline-offset-4 hover:text-ember"
+                >
+                  {emailQuery.data}
+                </a>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(emailQuery.data!);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 1500);
+                    } catch {
+                      // clipboard unavailable — silently ignore
+                    }
+                  }}
+                  className="border border-border px-2 py-0.5 font-display text-[10px] tracking-widest uppercase text-muted-foreground hover:text-ember"
+                  aria-label="Copy email address"
+                >
+                  {copied ? "Copied" : "Copy"}
+                </button>
+              </div>
             )}
           </div>
           <button
