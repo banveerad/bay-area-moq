@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatEventDate } from "@/lib/meetups";
+import { getMemberEmails } from "@/lib/member-emails.functions";
 
 type Props = {
   userId: string | null;
@@ -46,6 +47,16 @@ export function MemberProfileDialog({ userId, onClose }: Props) {
     },
   });
 
+  const emailQuery = useQuery({
+    queryKey: ["admin-member-email", userId],
+    enabled: Boolean(userId),
+    retry: false,
+    queryFn: async () => {
+      const emails = await getMemberEmails({ data: { userIds: [userId!] } });
+      return emails[userId!] ?? null;
+    },
+  });
+
   if (!userId) return null;
 
   const profile = profileQuery.data;
@@ -70,6 +81,14 @@ export function MemberProfileDialog({ userId, onClose }: Props) {
             <h2 className="mt-3 text-2xl">
               {profileQuery.isLoading ? "Loading…" : profile?.display_name || "Member"}
             </h2>
+            {emailQuery.data && (
+              <a
+                href={`mailto:${emailQuery.data}`}
+                className="mt-1 block text-sm text-muted-foreground underline decoration-border underline-offset-4 hover:text-ember"
+              >
+                {emailQuery.data}
+              </a>
+            )}
           </div>
           <button
             type="button"
