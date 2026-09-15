@@ -47,6 +47,16 @@ export function MemberProfileDialog({ userId, onClose }: Props) {
     },
   });
 
+  const emailQuery = useQuery({
+    queryKey: ["admin-member-email", userId],
+    enabled: Boolean(userId),
+    retry: false,
+    queryFn: async () => {
+      const emails = await getMemberEmails({ data: { userIds: [userId!] } });
+      return emails[userId!] ?? null;
+    },
+  });
+
   if (!userId) return null;
 
   const profile = profileQuery.data;
