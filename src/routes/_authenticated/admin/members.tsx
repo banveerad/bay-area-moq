@@ -102,7 +102,7 @@ function AdminMembersPage() {
     const rows = profilesQuery.data ?? [];
     if (!q) return rows;
     return rows.filter((m) =>
-      [m.display_name, m.company, m.interests].some((v) => (v ?? "").toLowerCase().includes(q)),
+      [m.display_name, m.last_name, m.company, m.interests].some((v) => (v ?? "").toLowerCase().includes(q)),
     );
   }, [profilesQuery.data, query]);
 
@@ -153,7 +153,7 @@ function AdminMembersPage() {
             >
               <div>
                 <p className="text-base">
-                  {m.display_name || "Member"}
+                  {[m.display_name, m.last_name].filter(Boolean).join(" ") || "Member"}
                   {organiser && (
                     <span className="ml-3 font-display text-xs tracking-widest uppercase text-ember">
                       Organiser
