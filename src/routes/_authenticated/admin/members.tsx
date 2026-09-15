@@ -38,7 +38,7 @@ function AdminMembersPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, display_name, company, interests, created_at")
+        .select("id, display_name, last_name, company, interests, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -102,7 +102,7 @@ function AdminMembersPage() {
     const rows = profilesQuery.data ?? [];
     if (!q) return rows;
     return rows.filter((m) =>
-      [m.display_name, m.company, m.interests].some((v) => (v ?? "").toLowerCase().includes(q)),
+      [m.display_name, m.last_name, m.company, m.interests].some((v) => (v ?? "").toLowerCase().includes(q)),
     );
   }, [profilesQuery.data, query]);
 
@@ -153,7 +153,7 @@ function AdminMembersPage() {
             >
               <div>
                 <p className="text-base">
-                  {m.display_name || "Member"}
+                  {[m.display_name, m.last_name].filter(Boolean).join(" ") || "Member"}
                   {organiser && (
                     <span className="ml-3 font-display text-xs tracking-widest uppercase text-ember">
                       Organiser

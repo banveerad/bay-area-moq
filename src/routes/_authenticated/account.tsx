@@ -31,6 +31,7 @@ export const Route = createFileRoute("/_authenticated/account")({
 
 const profileSchema = z.object({
   display_name: z.string().trim().max(80).nullable(),
+  last_name: z.string().trim().max(80).nullable(),
   company: z.string().trim().max(120).nullable(),
   interests: z.string().trim().max(500).nullable(),
 });
@@ -39,7 +40,7 @@ function AccountPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState({ display_name: "", company: "", interests: "" });
+  const [form, setForm] = useState({ display_name: "", last_name: "", company: "", interests: "" });
   const [busy, setBusy] = useState(false);
 
   const { data: profile } = useQuery({
@@ -48,7 +49,7 @@ function AccountPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("display_name, company, interests, notify_new_meetups")
+        .select("display_name, last_name, company, interests, notify_new_meetups")
         .eq("id", user!.id)
         .maybeSingle();
       if (error) throw error;
@@ -118,6 +119,7 @@ function AccountPage() {
     if (profile) {
       setForm({
         display_name: profile.display_name ?? "",
+        last_name: profile.last_name ?? "",
         company: profile.company ?? "",
         interests: profile.interests ?? "",
       });
@@ -129,6 +131,7 @@ function AccountPage() {
     if (!user) return;
     const parsed = profileSchema.safeParse({
       display_name: form.display_name || null,
+      last_name: form.last_name || null,
       company: form.company || null,
       interests: form.interests || null,
     });
@@ -164,17 +167,30 @@ function AccountPage() {
       </p>
 
       <form onSubmit={handleSave} className="mt-10 space-y-4">
-        <label className="block">
-          <span className="font-display text-xs tracking-widest text-muted-foreground uppercase">
-            Display name
-          </span>
-          <input
-            value={form.display_name}
-            onChange={(e) => setForm({ ...form, display_name: e.target.value })}
-            maxLength={80}
-            className="mt-2 w-full border border-border bg-surface px-3 py-2.5 text-sm outline-none focus:border-ember"
-          />
-        </label>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="font-display text-xs tracking-widest text-muted-foreground uppercase">
+              First name
+            </span>
+            <input
+              value={form.display_name}
+              onChange={(e) => setForm({ ...form, display_name: e.target.value })}
+              maxLength={80}
+              className="mt-2 w-full border border-border bg-surface px-3 py-2.5 text-sm outline-none focus:border-ember"
+            />
+          </label>
+          <label className="block">
+            <span className="font-display text-xs tracking-widest text-muted-foreground uppercase">
+              Last name
+            </span>
+            <input
+              value={form.last_name}
+              onChange={(e) => setForm({ ...form, last_name: e.target.value })}
+              maxLength={80}
+              className="mt-2 w-full border border-border bg-surface px-3 py-2.5 text-sm outline-none focus:border-ember"
+            />
+          </label>
+        </div>
         <label className="block">
           <span className="font-display text-xs tracking-widest text-muted-foreground uppercase">
             Company or project

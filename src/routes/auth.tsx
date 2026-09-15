@@ -50,6 +50,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
@@ -125,7 +126,10 @@ function AuthPage() {
           password: parsed.data.password,
           options: {
             emailRedirectTo: window.location.origin,
-            data: { display_name: displayName.trim().slice(0, 80) },
+            data: {
+              display_name: displayName.trim().slice(0, 80),
+              last_name: lastName.trim().slice(0, 80),
+            },
           },
         });
         if (error) throw error;
@@ -235,18 +239,32 @@ function AuthPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === "signup" && (
-              <label className="block">
-                <span className="font-display text-xs tracking-widest text-muted-foreground uppercase">
-                  Display name
-                </span>
-                <input
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  maxLength={80}
-                  placeholder="Ada Lovelace"
-                  className="mt-2 w-full border border-border bg-surface px-3 py-2.5 text-sm outline-none focus:border-ember"
-                />
-              </label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block">
+                  <span className="font-display text-xs tracking-widest text-muted-foreground uppercase">
+                    First name
+                  </span>
+                  <input
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    maxLength={80}
+                    placeholder="Ada"
+                    className="mt-2 w-full border border-border bg-surface px-3 py-2.5 text-sm outline-none focus:border-ember"
+                  />
+                </label>
+                <label className="block">
+                  <span className="font-display text-xs tracking-widest text-muted-foreground uppercase">
+                    Last name
+                  </span>
+                  <input
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    maxLength={80}
+                    placeholder="Lovelace"
+                    className="mt-2 w-full border border-border bg-surface px-3 py-2.5 text-sm outline-none focus:border-ember"
+                  />
+                </label>
+              </div>
             )}
             <label className="block">
               <span className="font-display text-xs tracking-widest text-muted-foreground uppercase">
