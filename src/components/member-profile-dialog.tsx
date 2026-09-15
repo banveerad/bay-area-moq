@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatEventDate } from "@/lib/meetups";
+import { getMemberEmails } from "@/lib/member-emails.functions";
 
 type Props = {
   userId: string | null;
