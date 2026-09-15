@@ -107,6 +107,7 @@ export type Database = {
           display_name: string | null
           id: string
           interests: string | null
+          last_name: string | null
           notify_new_meetups: boolean
           updated_at: string
         }
@@ -116,6 +117,7 @@ export type Database = {
           display_name?: string | null
           id: string
           interests?: string | null
+          last_name?: string | null
           notify_new_meetups?: boolean
           updated_at?: string
         }
@@ -125,6 +127,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           interests?: string | null
+          last_name?: string | null
           notify_new_meetups?: boolean
           updated_at?: string
         }
