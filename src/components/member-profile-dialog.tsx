@@ -17,7 +17,7 @@ export function MemberProfileDialog({ userId, onClose }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, display_name, company, interests, created_at")
+        .select("id, display_name, last_name, company, interests, created_at")
         .eq("id", userId!)
         .maybeSingle();
       if (error) throw error;
@@ -81,7 +81,7 @@ export function MemberProfileDialog({ userId, onClose }: Props) {
               Member profile
             </p>
             <h2 className="mt-3 text-2xl">
-              {profileQuery.isLoading ? "Loading…" : profile?.display_name || "Member"}
+              {profileQuery.isLoading ? "Loading…" : [profile?.display_name, profile?.last_name].filter(Boolean).join(" ") || "Member"}
             </h2>
             {emailQuery.data && (
               <div className="mt-1 flex items-center gap-2">

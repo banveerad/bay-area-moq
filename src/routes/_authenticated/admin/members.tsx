@@ -38,7 +38,7 @@ function AdminMembersPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, display_name, company, interests, created_at")
+        .select("id, display_name, last_name, company, interests, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
