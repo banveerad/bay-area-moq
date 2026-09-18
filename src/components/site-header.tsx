@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useMeetupAccess } from "@/hooks/use-meetup-access";
 
-const DISCORD_URL = "https://discord.gg/ZBNyHkkX";
+const DISCORD_URL = "https://discord.gg/75C3Y4gFae";
 
 function DiscordIcon({ className }: { className?: string }) {
   return (

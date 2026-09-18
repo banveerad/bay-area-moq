@@ -2,7 +2,7 @@
 
 A community site for Bay Area video streaming engineers — Media Over QUIC (MoQ), live streaming, VOD, encoding, packaging, CDNs, ads and ad insertion.
 
-**Live**: https://moqbayarea.com · **Discord**: https://discord.gg/ZBNyHkkX
+**Live**: https://moqbayarea.com · **Discord**: https://discord.gg/75C3Y4gFae
 
 ## What the site does
 
